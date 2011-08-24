@@ -1,25 +1,68 @@
 package Sub::Spec::To::Text::Usage;
 
+# TODO: use Sub::Spec::To::Org & Org::To::Text
+
 use 5.010;
 use strict;
 use warnings;
 
 use Sub::Spec::Utils; # tmp, for _parse_schema
 
+require Exporter;
+our @ISA = qw(Exporter);
+our @EXPORT_OK = qw(spec_to_usage);
+
+# VERSION
+
+our %SPEC;
+
 sub _parse_schema {
     Sub::Spec::Utils::_parse_schema(@_);
 }
 
-sub gen_usage($;$) {
+$SPEC{spec_to_usage} = {
+    summary => 'Generate usage text from spec',
+    args => {
+        spec => ['hash*' => { # XXX spec
+            summary => 'The sub spec',
+        }],
+        command_name => ['str' => {
+            summary => 'Name of command',
+            description => <<'_',
+_
+        }],
+        options_name => ['str' => {
+            summary => 'Name of options',
+            description => <<'_',
+_
+        }],
+        is_cmdline => ['bool' => {
+            summary => 'Name of options',
+            description => <<'_',
+_
+            default => 0,
+        }],
+#        lang => ['str' => {
+#            summary => 'Language',
+#            description => <<'_',
+#_
+#            in => [qw/en id/],
+#            default => 'en',
+#        }],
+    },
+};
+sub spec_to_usage {
+    # to minimize startup overhead
     require Data::Dump::Partial;
     require List::MoreUtils;
 
-    my ($sub_spec, $opts) = @_;
-    $opts //= {};
+    my %args = @_;
+    my $sub_spec = $args{spec} or return [400, "Please specify spec"];
+    my $iscmd    = $args{is_cmdline};
 
     my $usage = "";
 
-    my $cmd = $opts->{cmd};
+    my $cmd = $args{command_name};
     if ($sub_spec->{name}) {
         $cmd = ($sub_spec->{_package} ? "$sub_spec->{_package}::" : "") .
             $sub_spec->{name};
@@ -37,26 +80,26 @@ sub gen_usage($;$) {
     my $args  = $sub_spec->{args} // {};
     my $rargs = $sub_spec->{required_args};
     $args = { map {$_ => _parse_schema($args->{$_})} keys %$args };
-    my $has_cat = grep { $_->{attr_hashes}[0]{arg_category} }
+    my $has_cat = grep { $_->{clause_sets}[0]{arg_category} }
         values %$args;
     my $prev_cat;
     my $noted_star_req;
     for my $name (sort {
-        (($args->{$a}{attr_hashes}[0]{arg_category} // "") cmp
-             ($args->{$b}{attr_hashes}[0]{arg_category} // "")) ||
-                 (($args->{$a}{attr_hashes}[0]{arg_pos} // 9999) <=>
-                      ($args->{$b}{attr_hashes}[0]{arg_pos} // 9999)) ||
+        (($args->{$a}{clause_sets}[0]{arg_category} // "") cmp
+             ($args->{$b}{clause_sets}[0]{arg_category} // "")) ||
+                 (($args->{$a}{clause_sets}[0]{arg_pos} // 9999) <=>
+                      ($args->{$b}{clause_sets}[0]{arg_pos} // 9999)) ||
                           ($a cmp $b) } keys %$args) {
         my $arg = $args->{$name};
-        my $ah0 = $arg->{attr_hashes}[0];
+        my $ah0 = $arg->{clause_sets}[0];
 
         my $cat = $ah0->{arg_category} // "";
         if (!defined($prev_cat) || $prev_cat ne $cat) {
             $usage .= "\n" if defined($prev_cat);
             $usage .= ($cat ? ucfirst("$cat options") :
                            ($has_cat ? "General options" :
-                                ($opts->{options_name} ?
-                                     "$opts->{options_name} options" :
+                                ($args{options_name} ?
+                                     "$args{options_name} options" :
                                          "Options")));
             $usage .= " (* denotes required options)"
                 unless $noted_star_req++;
@@ -119,7 +162,7 @@ sub gen_usage($;$) {
 
     if ($sub_spec->{cmdline_examples}) {
         $usage .= "\nExamples:\n\n";
-        my $cmd = $opts->{cmd} // $0;
+        my $cmd = $args{command_name} // $0;
         for my $ex (@{ $sub_spec->{cmdline_examples} }) {
             $usage .= " % $cmd $ex->{cmd}\n";
             my $desc = $ex->{description};
@@ -130,7 +173,7 @@ sub gen_usage($;$) {
         }
     }
 
-    $usage;
+    [200, "OK", $usage];
 }
 
 1;
@@ -138,6 +181,8 @@ sub gen_usage($;$) {
 __END__
 
 =head1 SYNOPSIS
+
+ use Sub::Spec::To::Text::Usage qw(spec_to_usage);
 
 =head1 DESCRIPTION
 
