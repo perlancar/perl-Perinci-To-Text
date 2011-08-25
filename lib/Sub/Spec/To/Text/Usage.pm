@@ -183,6 +183,8 @@ __END__
 =head1 SYNOPSIS
 
  use Sub::Spec::To::Text::Usage qw(spec_to_usage);
+ my $text = spec_to_usage(spec=>$spec, ...);
+
 
 =head1 DESCRIPTION
 
