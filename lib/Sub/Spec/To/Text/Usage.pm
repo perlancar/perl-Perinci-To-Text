@@ -188,4 +188,9 @@ __END__
 
 =head1 DESCRIPTION
 
+
+=head1 FUNCTIONS
+
+None are exported, but they are exportable.
+
 =cut
