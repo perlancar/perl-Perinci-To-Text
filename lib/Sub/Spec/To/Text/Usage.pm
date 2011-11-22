@@ -6,7 +6,7 @@ use 5.010;
 use strict;
 use warnings;
 
-use Data::Sah::Util;
+use Data::Sah;
 
 require Exporter;
 our @ISA = qw(Exporter);
@@ -17,7 +17,7 @@ our @EXPORT_OK = qw(spec_to_usage);
 our %SPEC;
 
 sub _parse_schema {
-    Data::Sah::Util::_parse_schema(@_);
+    Data::Sah::normalize_schema($_[0]);
 }
 
 $SPEC{spec_to_usage} = {
