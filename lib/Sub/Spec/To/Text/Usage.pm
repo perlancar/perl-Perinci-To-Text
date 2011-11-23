@@ -154,7 +154,7 @@ sub spec_to_usage {
         }
 
         $usage .= sprintf("  --%-25s %s\n",
-                          $name . ($ah0->{required} ? "*" : "") .
+                          $name . ($ah0->{req} ? "*" : "") .
                               (defined($o) ? " [or arg ".($o+1).
                                   ($g ? "-last":"")."]" : ""),
                           $arg_desc);
