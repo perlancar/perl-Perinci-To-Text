@@ -1,4 +1,10 @@
-Revision history for Sub::Spec::To::Text
+Revision history for Perinci-To-Text
+
+0.05     2012-03-05 (not yet released)
+
+         Rename distribution from Sub-Spec-To-Text to Perinci-To-Text. Follow
+         Rinci 1.1 specification.
+
 
 0.04     2011-11-23
 
