@@ -15,6 +15,9 @@ msgstr "Functions"
 msgid  "Variables"
 msgstr "Variables"
 
+msgid  "Name"
+msgstr "Name"
+
 msgid  "Summary"
 msgstr "Summary"
 
@@ -114,8 +117,8 @@ msgstr "None are exported by default, but they are exportable."
 
 # function features
 
-msgid  "This function supports todo operation. Please read 'The undo protocol' in Rinci::function specification."
-msgstr "This function supports todo operation. Please read 'The undo protocol' in Rinci::function specification."
+msgid  "This function supports undo operation. Please read 'The undo protocol' in Rinci::function specification."
+msgstr "This function supports undo operation. Please read 'The undo protocol' in Rinci::function specification."
 
 msgid  "This function is declared as %1 (%2). Please read the '%1' feature in Rinci::function specification."
 msgid  "This function is declared as %1 (%2). Please read the '%1' feature in Rinci::function specification."

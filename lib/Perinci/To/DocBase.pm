@@ -9,13 +9,16 @@ use Moo;
 has url => (is=>'rw');
 has sections => (is=>'rw');
 has function_sections => (is => 'rw');
-has method_sections => (is => 'rw');
+#has method_sections => (is => 'rw');
 has lang => (is => 'rw');
 has fallback_lang => (is => 'rw');
+has mark_fallback_text => (is => 'rw', default=>sub{1});
 has _pa => (is => 'rw'); # store Perinci::Access object
-has _result => (is => 'rw'); # store final result, array
+has _lines => (is => 'rw'); # store final result, array
 has _parse => (is => 'rw'); # store parsed items, hash
 has _lh => (is => 'rw'); # store localize handle
+has _indent_level => (is => 'rw');
+has indent => (is => 'rw', default => sub{"  "}); # indent character
 
 sub BUILD {
     require Module::Load;
@@ -29,7 +32,7 @@ sub BUILD {
         'summary',
         'description',
         'functions',
-        #'methods',
+        'links',
     ];
     $self->{function_sections} //= [
         'summary',
@@ -60,9 +63,31 @@ sub BUILD {
 #    my ($self, $name) = @_;
 #}
 
-sub add_result {
-    my ($self, @e) = @_;
-    push @{$self->_result}, @e;
+sub add_lines {
+    my ($self, @l) = @_;
+    my $indent = $self->indent x $self->_indent_level;
+    push @{$self->_lines},
+        map {"$indent$_" . (/\n\z/s ? "" : "\n") }
+            map {/\n/ ? split /\n/ : $_}
+                @l;
+}
+
+sub inc_indent {
+    my ($self, $n) = @_;
+    $n //= 1;
+    $self->{_indent_level} += $n;
+}
+
+sub dec_indent {
+    my ($self, $n) = @_;
+    $n //= 1;
+    $self->{_indent_level} -= $n;
+    die "BUG: Negative indent level" unless $self->{_indent_level} >=0;
+}
+
+sub loc {
+    my ($self, @args) = @_;
+    $self->_lh->maketext(@args);
 }
 
 # get text from property of appropriate language. XXX should be moved to
@@ -92,6 +117,9 @@ sub _get_langprop {
             my $k = "$prop.alt.lang.$fblang";
             $v = $meta->{$k};
         }
+        if (defined($v) && $self->mark_fallback_text) {
+            $v = "(*$fblang) $v";
+        }
     }
     $v;
 }
@@ -108,29 +136,33 @@ sub parse_summary {
     }
     my $summary = $self->_get_langprop($self->{_meta}, "summary");
 
-    $self->{_parse}{name} = $name;
+    $self->{_parse}{name}    = $name;
     $self->{_parse}{summary} = $summary;
 }
 
 sub gen_summary {}
 
 sub parse_description {
+    my ($self) = @_;
+
+    $self->{_parse}{description} =
+        $self->_get_langprop($self->{_meta}, "description");
 }
 
 sub gen_description {}
 
-sub parse_functions {
-    my ($self) = @_;
-}
-
-sub gen_functions {}
-
-sub parse_links {
-}
-
-sub gen_links {}
-
 sub fparse_summary {
+    my ($self) = @_;
+    my $p = $self->_parse->{functions}{ $self->{_furl} };
+
+    my $name = $self->_get_langprop($self->{_fmeta}, "name");
+    if (!$name) {
+        $self->{_furl} =~ m!.+/(.+)!;
+        $name = $1;
+    }
+    my $summary = $self->_get_langprop($self->{_fmeta}, "summary");
+    $p->{name}    = $name;
+    $p->{summary} = $summary;
 }
 
 sub fgen_summary {}
@@ -155,14 +187,64 @@ sub fparse_links {
 
 sub fgen_links {}
 
-sub generate_function {
-    my ($self, $name, %opts) = @_;
-    $log->tracef("-> generate_function(name=%s, opts=%s)", $name, \%opts);
+sub _parse_function {
+    my ($self, $url) = @_;
 
-    $self->{_parse}{function} = {};
+    my $fmeta;
+    if ($self->{_child_metas}) {
+        $fmeta = $self->{_child_metas}{$url}
+            or die "Can't find $url in _child_metas";
+    } else {
+        my $res = $self->_pa->request(meta => $url);
+        $res->[0] == 200 or die "Can't meta $self->{url}: ".
+            "$res->[0] - $res->[1]";
+        $fmeta = $res->[2];
+    }
+    $self->{_furl} = $url;
+    $self->{_fmeta} = $fmeta;
 
-    $log->tracef("<- generate_function()");
+    $self->_parse->{functions}{$url} = {};
+    for my $s (@{ $self->function_sections // [] }) {
+        my $meth = "fparse_$s";
+        $log->tracef("=> $meth()");
+        $self->$meth;
+    }
 }
+
+sub _gen_function {
+    my ($self, $url, %opts) = @_;
+    $log->tracef("-> _gen_function(url=%s, opts=%s)", $url, \%opts);
+
+    my $p = $self->_parse->{functions}{$url};
+    for my $s (@{ $self->function_sections // [] }) {
+        my $meth = "fgen_$s";
+        $log->tracef("=> $meth()");
+        $self->$meth;
+    }
+}
+
+sub parse_functions {
+    my ($self) = @_;
+
+    for my $e (@{ $self->{_children} }) {
+        next unless $e->{type} eq 'function';
+        $self->_parse_function($e->{uri});
+    }
+}
+
+sub gen_functions {
+    my ($self) = @_;
+
+    for my $e (@{ $self->{_children} }) {
+        next unless $e->{type} eq 'function';
+        $self->_gen_function($e->{uri});
+    }
+}
+
+sub parse_links {
+}
+
+sub gen_links {}
 
 sub generate {
     my ($self, %opts) = @_;
@@ -175,6 +257,9 @@ sub generate {
     $self->{_info} = $res->[2];
     #$log->tracef("info=%s", $self->{_info});
 
+    die "url must be a package entity, not $self->{_info}{type} ($self->{url})"
+        unless $self->{_info}{type} eq 'package';
+
     $res = $self->_pa->request(meta=>$self->{url});
     $res->[0] == 200 or die "Can't meta $self->{url}: $res->[0] - $res->[1]";
     $self->{_meta} = $res->[2];
@@ -183,7 +268,7 @@ sub generate {
     $res = $self->_pa->request(list=>$self->{url}, {detail=>1});
     $res->[0] == 200 or die "Can't list $self->{url}: $res->[0] - $res->[1]";
     $self->{_children} = $res->[2];
-    #$log->tracef("entities=%s", $self->{_entities});
+    #$log->tracef("children=%s", $self->{_children});
 
     $res = $self->_pa->request(child_metas=>$self->{url});
     $res->[0] == 200 or die "Can't child_metas $self->{url}: ".
@@ -191,7 +276,8 @@ sub generate {
     $self->{_child_metas} = $res->[2];
     #$log->tracef("child_metas=%s", $self->{_child_metas});
 
-    $self->_result([]);
+    $self->_lines([]);
+    $self->_indent_level(0);
     $self->_parse({});
     for my $s (@{ $self->sections // [] }) {
         my $meth = "parse_$s";
@@ -203,7 +289,7 @@ sub generate {
     }
 
     $log->tracef("<- generate()");
-    join("", @{ $self->_result });
+    join("", @{ $self->_lines });
 }
 
 1;
@@ -223,10 +309,10 @@ C<sections>. Then you run C<generate()>, which will call C<parse_SECTION> and
 C<gen_SECTION> methods for each section consecutively. C<parse_*> is supposed to
 parse information from the metadata into a form readily usable in $self->_parse
 hash. C<gen_*> is supposed to generate the actual section in the final
-documentation format, into $self->_result array. The base class provides many of
-the C<parse_*> methods but provides none of the C<gen_*> methods, which must be
-supplied by subclasses like L<Perinci::To::Text>, L<Perinci::To::POD>,
-L<Perinci::To::HTML>. Finally strings in $self->_result is concatenated together
-and returned.
+documentation format, by calling C<add_lines> to add text. The base class
+provides many of the C<parse_*> methods but provides none of the C<gen_*>
+methods, which must be supplied by subclasses like L<Perinci::To::Text>,
+L<Perinci::To::POD>, L<Perinci::To::HTML>. Finally all the added lines is
+concatenated together and returned.
 
 =cut

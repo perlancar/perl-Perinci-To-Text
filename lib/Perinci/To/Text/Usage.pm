@@ -1,82 +1,26 @@
-package Sub::Spec::To::Text::Usage;
-
-# TODO: use Sub::Spec::To::Org & Org::To::Text
+package Perinci::To::Text::Usage;
 
 use 5.010;
-use strict;
-use warnings;
+use Log::Any '$log';
+use Moo;
 
-use Data::Sah;
+extends 'Perinci::To::DocBase';
 
-require Exporter;
-our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(spec_to_usage);
+sub gen_summary {
+    my ($self) = @_;
 
-# VERSION
+    # XXX set name from cmdline's program_name (in parse_summary)
 
-our %SPEC;
-
-sub _parse_schema {
-    Data::Sah::normalize_schema($_[0]);
+    $self->add_result(
+        $self->_parse->{name} // "",
+        ($self->_parse->{name} && $self->_parse->{summary} ? ' - ' : ''),
+        $self->_parse->{summary} // "",
+        "\n\n");
 }
 
-$SPEC{spec_to_usage} = {
-    summary => 'Generate usage text from spec',
-    args => {
-        spec => ['hash*' => { # XXX spec
-            summary => 'The sub spec',
-        }],
-        command_name => ['str' => {
-            summary => 'Name of command',
-            description => <<'_',
-_
-        }],
-        options_name => ['str' => {
-            summary => 'Name of options',
-            description => <<'_',
-_
-        }],
-        is_cmdline => ['bool' => {
-            summary => 'Name of options',
-            description => <<'_',
-_
-            default => 0,
-        }],
-#        lang => ['str' => {
-#            summary => 'Language',
-#            description => <<'_',
-#_
-#            in => [qw/en id/],
-#            default => 'en',
-#        }],
-    },
-};
-sub spec_to_usage {
-    # to minimize startup overhead
-    require Data::Dump::Partial;
-    require List::MoreUtils;
+1;
 
-    my %args = @_;
-    my $sub_spec = $args{spec} or return [400, "Please specify spec"];
-    my $iscmd    = $args{is_cmdline};
-
-    my $usage = "";
-
-    my $cmd = $args{command_name};
-    if ($sub_spec->{name}) {
-        $cmd = ($sub_spec->{_package} ? "$sub_spec->{_package}::" : "") .
-            $sub_spec->{name};
-    }
-    if ($sub_spec->{summary}) {
-        $usage .= ($cmd ? "$cmd - " : "") . "$sub_spec->{summary}\n\n";
-    }
-
-    my $desc = $sub_spec->{description};
-    if ($desc) {
-        $desc =~ s/^\n+//; $desc =~ s/\n+$//;
-        $usage .= "$desc\n\n";
-    }
-
+__END__
     my $args  = $sub_spec->{args} // {};
     my $rargs = $sub_spec->{required_args};
     $args = { map {$_ => _parse_schema($args->{$_})} keys %$args };
