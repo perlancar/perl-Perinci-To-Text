@@ -12,9 +12,10 @@ has function_sections => (is => 'rw');
 has method_sections => (is => 'rw');
 has lang => (is => 'rw');
 has fallback_lang => (is => 'rw');
-has _pa => (is => 'rw');
+has _pa => (is => 'rw'); # store Perinci::Access object
 has _result => (is => 'rw'); # store final result, array
 has _parse => (is => 'rw'); # store parsed items, hash
+has _lh => (is => 'rw'); # store localize handle
 
 sub BUILD {
     require Module::Load;
@@ -45,8 +46,9 @@ sub BUILD {
     $class = __PACKAGE__.'::I18N'
         unless SHARYANTO::Package::Util::package_exists($class);
     Module::Load::load $class;
-    $self->{_loc_class} = $class->new;
-    $self->{_lh} = $self->{_loc_class}->get_handle($self->lang)
+    $self->{_loc_class} = $class;
+    $self->{_loc_obj}   = $class->new;
+    $self->{_lh}        = $self->{_loc_obj}->get_handle($self->lang)
         or die "Can't determine language";
 }
 
@@ -94,9 +96,6 @@ sub _get_langprop {
     $v;
 }
 
-sub _sect_function_or_method {
-}
-
 sub parse_summary {
     my ($self) = @_;
 
@@ -113,39 +112,48 @@ sub parse_summary {
     $self->{_parse}{summary} = $summary;
 }
 
-sub sect_summary {
+sub gen_summary {}
+
+sub parse_description {
+}
+
+sub gen_description {}
+
+sub parse_functions {
     my ($self) = @_;
-    $self->parse_summary;
 }
 
-sub sect_description {
+sub gen_functions {}
+
+sub parse_links {
 }
 
-sub sect_functions {
-    my ($self, %args) = @_;
+sub gen_links {}
+
+sub fparse_summary {
 }
 
-sub sect_methods {
-    my ($self, %args) = @_;
+sub fgen_summary {}
+
+sub fparse_description {
 }
 
-sub sect_links {
+sub fgen_description {}
+
+sub fparse_arguments {
 }
 
-sub fsect_summary {
+sub fgen_arguments {}
+
+sub fparse_examples {
 }
 
-sub fsect_description {
+sub fgen_examples {}
+
+sub fparse_links {
 }
 
-sub fsect_arguments {
-}
-
-sub fsect_examples {
-}
-
-sub fsect_links {
-}
+sub fgen_links {}
 
 sub generate_function {
     my ($self, $name, %opts) = @_;
@@ -186,7 +194,10 @@ sub generate {
     $self->_result([]);
     $self->_parse({});
     for my $s (@{ $self->sections // [] }) {
-        my $meth = "sect_$s";
+        my $meth = "parse_$s";
+        $log->tracef("=> $meth()");
+        $self->$meth;
+        $meth = "gen_$s";
         $log->tracef("=> $meth()");
         $self->$meth;
     }
@@ -199,3 +210,23 @@ sub generate {
 #ABSTRACT: Base class for class that generates documentation from Rinci metadata
 
 =for Pod::Coverate ^section_ ^parse_
+
+=head1 DESCRIPTION
+
+DocBase is the base class for classes that produce documentation from Rinci
+metadata. It provides i18n class using L<Locale::Maketext>
+(L<Perinci::To::DocBase::I18N>) and you can access the language handle at
+$self->_lh.
+
+To generate a documentation, first you provide a list of section names in
+C<sections>. Then you run C<generate()>, which will call C<parse_SECTION> and
+C<gen_SECTION> methods for each section consecutively. C<parse_*> is supposed to
+parse information from the metadata into a form readily usable in $self->_parse
+hash. C<gen_*> is supposed to generate the actual section in the final
+documentation format, into $self->_result array. The base class provides many of
+the C<parse_*> methods but provides none of the C<gen_*> methods, which must be
+supplied by subclasses like L<Perinci::To::Text>, L<Perinci::To::POD>,
+L<Perinci::To::HTML>. Finally strings in $self->_result is concatenated together
+and returned.
+
+=cut

@@ -6,9 +6,8 @@ use Moo;
 
 extends 'Perinci::To::DocBase';
 
-sub sect_summary {
+sub gen_summary {
     my ($self) = @_;
-    $self->SUPER::sect_summary;
 
     $self->add_result(
         $self->_parse->{name} // "",
@@ -17,10 +16,10 @@ sub sect_summary {
         "\n\n");
 }
 
-sub sect_version {
+sub gen_version {
 }
 
-    # version
+# version
 
 # description
 
