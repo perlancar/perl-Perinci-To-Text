@@ -9,17 +9,65 @@ our %Lexicon = %{ Locale::Maketext::Lexicon::Gettext->parse(<DATA>) };
 1;
 # ABSTRACT: English translation for Perinci::To::* document generators
 __DATA__
+msgid  "Function"
+msgstr "Function"
+
 msgid  "Functions"
 msgstr "Functions"
 
+msgid  "General functions"
+msgstr "General functions"
+
+msgid  "Functions related to '%1'"
+msgstr "Functions related to '%1'"
+
+msgid  "Variable"
+msgstr "Variable"
+
 msgid  "Variables"
 msgstr "Variables"
+
+msgid  "General variables"
+msgstr "General variables"
+
+msgid  "Variables related to '%1'"
+msgstr "Variables related to '%1'"
+
+msgid  "Method"
+msgstr "Method"
+
+msgid  "Methods"
+msgstr "Methods"
+
+msgid  "General methods"
+msgstr "General methods"
+
+msgid  "Methods related to '%1'"
+msgstr "Methods related to '%1'"
+
+msgid  "Attribute"
+msgstr "Attribute"
+
+msgid  "Attributes"
+msgstr "Attributes"
+
+msgid  "General attributes"
+msgstr "General attributes"
+
+msgid  "Attributes related to '%1'"
+msgstr "Attributes related to '%1'"
+
+msgid  "Subpackages"
+msgstr "Subpackages"
 
 msgid  "Name"
 msgstr "Name"
 
 msgid  "Summary"
 msgstr "Summary"
+
+msgid  "Version"
+msgstr "Version"
 
 msgid  "Description"
 msgstr "Description"
@@ -42,7 +90,26 @@ msgstr "Categories"
 msgid  "Category"
 msgstr "Category"
 
+msgid  "This package does not have functions"
+msgstr "This package does not have functions"
+
+msgid  "This package does not have variables"
+msgstr "This package does not have variables"
+
+msgid  "This class does not add any method of its own"
+msgstr "This class does not add any method of its own"
+
+msgid  "This class does not add any attribute of its own"
+msgstr "This class does not add any attribute of its own"
+
+msgid  "Methods from superclass '%1'"
+msgstr "Methods from superclass '%1'"
+
+msgid  "Attributes from superclass '%1'"
+msgstr "Attributes from superclass '%1'"
+
 ### Text::Usage
+
 msgid  "Show version"
 msgstr "Show version"
 
@@ -52,12 +119,25 @@ msgstr "Display this help message"
 msgid  "List available subcommands"
 msgstr "List available subcommands"
 
+msgid  "List of available subcommands"
+msgstr "List of available subcommands"
+
+msgid  "Subcommand"
+msgstr "Subcommand"
+
+msgid  "Subcommands"
+msgstr "Subcommands"
+
+msgid  "For help on a subcommand, type '%1'"
+msgstr "For help on a subcommand, type '%1'"
+
 ### POD
 
 msgid  "This module has L<Rinci> metadata"
 msgid  "This module has L<Rinci> metadata"
 
 # tmp: Sah
+
 msgid  "default"
 msgstr "default"
 
@@ -92,6 +172,12 @@ msgstr "between %1 and %2 (exclusive)"
 
 msgid  "Arguments"
 msgstr "Arguments"
+
+msgid  "General arguments"
+msgstr "General arguments"
+
+msgid  "Arguments related to '%1'"
+msgstr "Arguments related to '%1'"
 
 msgid  "'*' denotes required arguments"
 msgstr "'*' denotes required arguments"

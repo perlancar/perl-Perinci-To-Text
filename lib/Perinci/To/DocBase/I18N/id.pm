@@ -9,14 +9,62 @@ our %Lexicon = %{ Locale::Maketext::Lexicon::Gettext->parse(<DATA>) };
 1;
 # ABSTRACT: Indonesian translation for Perinci::To::* document generators
 __DATA__
+msgid  "Function"
+msgstr "Fungsi"
+
 msgid  "Functions"
 msgstr "Fungsi"
+
+msgid  "General functions"
+msgstr "Fungsi umum"
+
+msgid  "Functions related to '%1'"
+msgstr "Fungsi yang berkaitan dengan '%1'"
+
+msgid  "Variable"
+msgstr "Variabel"
 
 msgid  "Variables"
 msgstr "Variabel"
 
+msgid  "General variables"
+msgstr "Variabel umum"
+
+msgid  "Variables related to '%1'"
+msgstr "Variabel yang berkaitan dengan '%1'"
+
+msgid  "Method"
+msgstr "Metode"
+
+msgid  "Methods"
+msgstr "Metode"
+
+msgid  "General methods"
+msgstr "Metode umum"
+
+msgid  "Methods related to '%1'"
+msgstr "Metode yang berkaitan dengan '%1'"
+
+msgid  "Attribute"
+msgstr "Atribut"
+
+msgid  "Attributes"
+msgstr "Atribut"
+
+msgid  "General attributes"
+msgstr "Atribut umum"
+
+msgid  "Attributes related to '%1'"
+msgstr "Atribut yang berkaitan dengan '%1'"
+
+msgid  "Subpackages"
+msgstr "Subpaket"
+
 msgid  "Name"
 msgstr "Nama"
+
+msgid  "Version"
+msgstr "Versi"
 
 msgid  "Summary"
 msgstr "Ringkasan"
@@ -42,7 +90,26 @@ msgstr "Kategori"
 msgid  "Category"
 msgstr "Kategori"
 
+msgid  "This package does not have functions"
+msgstr "Paket ini tidak memiliki fungsi"
+
+msgid  "This package does not have variables"
+msgstr "Paket ini tidak memiliki variabel"
+
+msgid  "This class does not add any method of its own"
+msgstr "Kelas ini tidak menambahkan metode apa-apa"
+
+msgid  "This class does not add any attribute of its own"
+msgstr "Kelas ini tidak menambahkan atribut apa-apa"
+
+msgid  "Methods from superclass '%1'"
+msgstr "Metode dari kelas induk '%1'"
+
+msgid  "Attributes from superclass '%1'"
+msgstr "Atribut dari kelas induk '%1'"
+
 ### Text::Usage
+
 msgid  "Show version"
 msgstr "Tampilkan versi"
 
@@ -52,12 +119,25 @@ msgstr "Tampilkan pesan bantuan ini"
 msgid  "List available subcommands"
 msgstr "Daftar subperintah yang ada"
 
+msgid  "List of available subcommands"
+msgstr "Daftar subperintah yang ada"
+
+msgid  "Subcommand"
+msgstr "Subperintah"
+
+msgid  "Subcommands"
+msgstr "Subperintah"
+
+msgid  "For help on a subcommand, type '%1'"
+msgstr "Untuk pesan bantuan subperintah tertentu, ketik '%1'"
+
 ### POD
 
 msgid  "This module has L<Rinci> metadata"
 msgid  "Modul ini dilengkapi metadata L<Rinci>"
 
 # tmp: Sah
+
 msgid  "default"
 msgstr "bawaan"
 
@@ -92,6 +172,12 @@ msgstr "antara %1 dan %2 (tidak termasuk ujung)"
 
 msgid  "Arguments"
 msgstr "Argumen"
+
+msgid  "General arguments"
+msgstr "Argumen umum"
+
+msgid  "Arguments related to '%1'"
+msgstr "Argumen yang berkaitan dengan '%1'"
 
 msgid  "'*' denotes required arguments"
 msgstr "'*' menandakan argumen wajib"

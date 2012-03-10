@@ -30,6 +30,7 @@ sub BUILD {
     $self->{_pa} //= Perinci::Access->new;
     $self->{sections} //= [
         'summary',
+        'version',
         'description',
         'functions',
         'links',
@@ -38,6 +39,7 @@ sub BUILD {
         'summary',
         'description',
         'arguments',
+        'result',
         'examples',
         'links',
     ];
@@ -62,6 +64,23 @@ sub BUILD {
 #sub delete_section {
 #    my ($self, $name) = @_;
 #}
+
+# return single-line dump of data structure, e.g. "[1, 2, 3]" (no trailing
+# newlines either).
+sub dump_data_sl {
+    require Data::Dump::OneLine;
+
+    my ($self, $data) = @_;
+    Data::Dump::OneLine::dump1($data);
+}
+
+# return a pretty dump of data structure
+sub dump_data {
+    require Data::Dump;
+
+    my ($self, $data) = @_;
+    Data::Dump::dump($data);
+}
 
 sub add_lines {
     my ($self, @l) = @_;
@@ -93,7 +112,8 @@ sub loc {
 # get text from property of appropriate language. XXX should be moved to
 # Perinci-Object later.
 sub _get_langprop {
-    my ($self, $meta, $prop) = @_;
+    my ($self, $meta, $prop, $opts) = @_;
+    $opts    //= {};
     my $lang   = $self->{lang};
     my $mlang  = $meta->{default_lang} // "en_US";
     my $fblang = $self->{fallback_lang};
@@ -117,8 +137,15 @@ sub _get_langprop {
             my $k = "$prop.alt.lang.$fblang";
             $v = $meta->{$k};
         }
+        if ($opts->{clean_extra_newlines} && defined($v)) {
+            for ($v) {
+                s/\A\n+//;
+                s/\n{2,}\z/\n/;
+            }
+        }
         if (defined($v) && $self->mark_fallback_text) {
-            $v = "(*$fblang) $v";
+            my $has_nl = $v =~ s/\n\z//;
+            $v = "{$fblang $v}" . ($has_nl ? "\n" : "");
         }
     }
     $v;
@@ -127,14 +154,22 @@ sub _get_langprop {
 sub parse_summary {
     my ($self) = @_;
 
-    my $name    = $self->_get_langprop($self->{_meta}, "name");
-    if (!$name) {
-        $name = $self->{_info}{uri};
-        $name =~ s!^pm:/!!;
-        $name =~ s!/$!!;
-        $name =~ s!/!::!g;
+    my ($name, $summary);
+
+    my $modname;
+    for ($modname) {
+        $_ = $self->{_info}{uri};
+        s!^pm:/!!;
+        s!/$!!;
+        s!/!::!g;
     }
-    my $summary = $self->_get_langprop($self->{_meta}, "summary");
+
+    if ($self->{_meta}) {
+        $name = $self->_get_langprop($self->{_meta}, "name");
+        $summary = $self->_get_langprop($self->{_meta}, "summary");
+    }
+    $name //= $modname;
+    $summary = "";
 
     $self->{_parse}{name}    = $name;
     $self->{_parse}{summary} = $summary;
@@ -142,11 +177,18 @@ sub parse_summary {
 
 sub gen_summary {}
 
+sub parse_version {
+    # already in meta's pkg_version
+}
+
+sub gen_version {}
+
 sub parse_description {
     my ($self) = @_;
 
-    $self->{_parse}{description} =
-        $self->_get_langprop($self->{_meta}, "description");
+    $self->{_parse}{description} = $self->{_meta} ?
+        $self->_get_langprop($self->{_meta}, "description",
+                             {clean_extra_newlines=>1}) : undef;
 }
 
 sub gen_description {}
@@ -172,7 +214,43 @@ sub fparse_description {
 
 sub fgen_description {}
 
+# XXX generate human-readable short description of schema, this will be
+# handled in the future by Sah itself (using the human compiler)
+sub _sah2human {
+    require Data::Sah;
+    require List::MoreUtils;
+
+    my ($self, $s) = @_;
+    use Data::Dump; dd $s;
+    if ($s->[0] eq 'any') {
+        my @alts    = map {Data::Sah::normalize_schema($_)}
+            @{$s->[1]{of} // []};
+        my @types   = map {$_->[0]} @alts;
+        @types      = sort List::MoreUtils::uniq(@types);
+        return join("|", @types) || 'any';
+    } else {
+        return $s->[0];
+    }
+}
+
 sub fparse_arguments {
+    my ($self) = @_;
+    my $p     = $self->_parse->{functions}{ $self->{_furl} };
+    my $fmeta = $self->{_fmeta};
+
+    my $args  = $fmeta->{args} // {};
+    $p->{args} = {};
+    for my $name (keys %$args) {
+        my $arg = $args->{$name};
+        $arg->{default_lang} //= $fmeta->{default_lang};
+        $arg->{schema}       //= ['any'=>{}];
+        my $pa = $p->{args}{$name} = {schema=>$arg->{schema}};
+        $pa->{human_arg} = $self->_sah2human($arg->{schema});
+
+        $pa->{summary}     = $self->_get_langprop($arg, 'summary');
+        $pa->{description} = $self->_get_langprop($arg, 'description',
+                                              {clean_extra_newlines=>1});
+    }
 }
 
 sub fgen_arguments {}
@@ -181,6 +259,24 @@ sub fparse_examples {
 }
 
 sub fgen_examples {}
+
+sub fparse_result {
+    my ($self) = @_;
+    my $p     = $self->_parse->{functions}{ $self->{_furl} };
+    my $fmeta = $self->{_fmeta};
+
+    $p->{res_schema} = $fmeta->{result} ? $fmeta->{result}{schema} : undef;
+    $p->{res_schema} //= [any => {}];
+    $p->{human_res} = $self->_sah2human($p->{res_schema});
+
+    if ($fmeta->{result_naked}) {
+        $p->{human_ret} = $p->{human_res};
+    } else {
+        $p->{human_ret} = '[code, msg, result, meta]';
+    }
+}
+
+sub fgen_result {}
 
 sub fparse_links {
 }
@@ -191,19 +287,27 @@ sub _parse_function {
     my ($self, $url) = @_;
 
     my $fmeta;
-    if ($self->{_child_metas}) {
-        $fmeta = $self->{_child_metas}{$url}
-            or die "Can't find $url in _child_metas";
-    } else {
+    my $found;
+    {
+        if ($self->{_child_metas}) {
+            if ($fmeta = $self->{_child_metas}{$url}) {
+                $found++;
+                last;
+            }
+        }
+
         my $res = $self->_pa->request(meta => $url);
         $res->[0] == 200 or die "Can't meta $self->{url}: ".
             "$res->[0] - $res->[1]";
         $fmeta = $res->[2];
+        $found++;
+        last;
     }
+    die "BUG: Didn't find function metadata" unless $found;
     $self->{_furl} = $url;
     $self->{_fmeta} = $fmeta;
 
-    $self->_parse->{functions}{$url} = {};
+    $self->_parse->{functions}{$url} = {meta=>$fmeta};
     for my $s (@{ $self->function_sections // [] }) {
         my $meth = "fparse_$s";
         $log->tracef("=> $meth()");
@@ -261,9 +365,10 @@ sub generate {
         unless $self->{_info}{type} eq 'package';
 
     $res = $self->_pa->request(meta=>$self->{url});
-    $res->[0] == 200 or die "Can't meta $self->{url}: $res->[0] - $res->[1]";
-    $self->{_meta} = $res->[2];
-    #$log->tracef("meta=%s", $self->{_meta});
+    if ($res->[0] == 200) {
+        $self->{_meta} = $res->[2];
+        #$log->tracef("meta=%s", $self->{_meta});
+    }
 
     $res = $self->_pa->request(list=>$self->{url}, {detail=>1});
     $res->[0] == 200 or die "Can't list $self->{url}: $res->[0] - $res->[1]";
