@@ -109,6 +109,15 @@ sub loc {
     $self->_lh->maketext(@args);
 }
 
+sub _trim_blank_lines {
+    my $self = shift;
+    local $_ = shift;
+    return $_ unless defined;
+    s/\A(?:\n\s*)+//;
+    s/(?:\n\s*){2,}\z/\n/;
+    $_;
+}
+
 # get text from property of appropriate language. XXX should be moved to
 # Perinci-Object later.
 sub _get_langprop {
@@ -128,6 +137,7 @@ sub _get_langprop {
         $x = exists $meta->{$k};
         $v = $meta->{$k};
     }
+    $v = $self->_trim_blank_lines($v);
     return $v if $x;
 
     if ($fblang ne $lang) {
@@ -137,18 +147,23 @@ sub _get_langprop {
             my $k = "$prop.alt.lang.$fblang";
             $v = $meta->{$k};
         }
-        if ($opts->{clean_extra_newlines} && defined($v)) {
-            for ($v) {
-                s/\A\n+//;
-                s/\n{2,}\z/\n/;
-            }
-        }
+        $v = $self->_trim_blank_lines($v);
         if (defined($v) && $self->mark_fallback_text) {
             my $has_nl = $v =~ s/\n\z//;
             $v = "{$fblang $v}" . ($has_nl ? "\n" : "");
         }
     }
     $v;
+}
+
+sub _wrap_to {
+    require Text::Wrap;
+
+    my ($self, $text, $columns) = @_;
+    $columns //= 80;
+
+    local $Text::Wrap::columns = $columns;
+    Text::Wrap::wrap('', '', $text);
 }
 
 sub parse_summary {
@@ -188,7 +203,7 @@ sub parse_description {
 
     $self->{_parse}{description} = $self->{_meta} ?
         $self->_get_langprop($self->{_meta}, "description",
-                             {clean_extra_newlines=>1}) : undef;
+                             {trim_blank_lines=>1}) : undef;
 }
 
 sub gen_description {}
@@ -248,7 +263,7 @@ sub fparse_arguments {
 
         $pa->{summary}     = $self->_get_langprop($arg, 'summary');
         $pa->{description} = $self->_get_langprop($arg, 'description',
-                                              {clean_extra_newlines=>1});
+                                              {trim_blank_lines=>1});
     }
 }
 
@@ -268,7 +283,6 @@ sub fparse_result {
     $p->{res_schema} //= [any => {}];
     $p->{human_res} = $self->_sah2human($p->{res_schema});
 
-    $log->warnf("%s", $fmeta);
     if ($fmeta->{result_naked}) {
         $p->{human_ret} = $p->{human_res};
     } else {
