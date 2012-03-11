@@ -63,13 +63,17 @@ sub _gen_function {
                 ' (' . $self->loc("'*' denotes required arguments") . '):',
             "");
         my $i = 0;
+        my $arg_has_ct;
         for my $name (sort keys %{$p->{args}}) {
+            my $prev_arg_has_ct = $arg_has_ct;
+            $arg_has_ct = 0;
             my $pa = $p->{args}{$name};
-            $self->add_lines("") if $i++ > 0;
+            $self->add_lines("") if $i++ > 0 && $prev_arg_has_ct;
             $self->add_lines(
                 "- " . $name . ($pa->{schema}[1]{req} ? '*' : '') .
                     ' => ' . $pa->{human_arg});
             if ($pa->{summary} || $p->{description}) {
+                $arg_has_ct++;
                 $self->inc_indent;
                 $self->add_lines($pa->{summary}) if $pa->{summary};
                 if ($pa->{description}) {

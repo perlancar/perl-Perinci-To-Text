@@ -221,7 +221,6 @@ sub _sah2human {
     require List::MoreUtils;
 
     my ($self, $s) = @_;
-    use Data::Dump; dd $s;
     if ($s->[0] eq 'any') {
         my @alts    = map {Data::Sah::normalize_schema($_)}
             @{$s->[1]{of} // []};
@@ -269,6 +268,7 @@ sub fparse_result {
     $p->{res_schema} //= [any => {}];
     $p->{human_res} = $self->_sah2human($p->{res_schema});
 
+    $log->warnf("%s", $fmeta);
     if ($fmeta->{result_naked}) {
         $p->{human_ret} = $p->{human_res};
     } else {
