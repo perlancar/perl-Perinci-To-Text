@@ -62,18 +62,25 @@ sub parse_subcommands {
 
 sub gen_subcommands {
     my ($self) = @_;
+    my $cmd = $self->cmdline;
+    my $scs = $cmd->subcommands;
     my $pff = $self->_parse->{functions};
 
-    #return unless keys %$pff;
-
-    # XXX categorize functions based on tags
-    for my $url (sort keys %$pff) {
-        my $p = $pff->{$url};
-        $self->_gen_function($url);
-    }
+    return unless keys %$scs;
 
     $self->add_lines($self->loc("List of available subcommands") . ':', "");
     $self->inc_indent;
+
+   # XXX categorize based on tags
+    if ($scs) {
+        for my $scn (keys %$scs) {
+            my $sc = $scs->{$scn};
+            $self->add_lines({wrap=>0}, $scn .
+                         ($sc->{summary} ? " - $sc->{summary}" : ""));
+        }
+    }
+
+    $self->dec_indent;
 }
 
 1;
