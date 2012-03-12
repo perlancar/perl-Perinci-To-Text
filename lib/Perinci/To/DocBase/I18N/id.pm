@@ -188,8 +188,8 @@ msgstr "Hasil"
 msgid  "Return value"
 msgstr "Nilai kembali"
 
-msgid  "Returns an enveloped result (an array). First element ($status) is HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element ($msg) is error message, or 'OK' if status is 200. Third element ($result) is the actual result. Fourth element ($meta) is called result metadata and is optional, hash that contains extra information."
-msgid  "Mengembalikan hasil terbungkus (larik). Elemen pertama ($status) berisi kode status HTTP (200 berarti OK, 4xx kesalahan di pemanggil, 5xx kesalahan di fungsi). Elemen kedua ($msg) adalah pesan kesalahan, atau 'OK' jika status 200. Elemen ketiga ($result) berisi hasil yang diinginkan. Elemen keempat ($meta) disebut metadata hasil, bersifat opsional, berupa hash informasi tambahan."
+msgid  "Returns an enveloped result (an array). First element (status) is an integer containing HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element (msg) is a string containing error message, or 'OK' if status is 200. Third element (result) is optional, the actual result. Fourth element (meta) is called result metadata and is optional, a hash that contains extra information."
+msgstr "Mengembalikan hasil terbungkus (larik). Elemen pertama (status) adalah bilangan bulat berisi kode status HTTP (200 berarti OK, 4xx kesalahan di pemanggil, 5xx kesalahan di fungsi). Elemen kedua (msg) adalah string berisi pesan kesalahan, atau 'OK' jika status 200. Elemen ketiga (result) bersifat opsional, berisi hasil yang diinginkan. Elemen keempat (meta) disebut metadata hasil, bersifat opsional, berupa hash informasi tambahan."
 
 ### function/Text::Usage
 

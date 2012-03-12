@@ -6,6 +6,11 @@ use Moo;
 
 extends 'Perinci::To::DocBase';
 
+sub BUILD {
+    my ($self, $args) = @_;
+    $self->{wrap} //= 1;
+}
+
 sub gen_summary {
     my ($self) = @_;
 
@@ -50,7 +55,7 @@ sub _gen_function {
     my $p = $self->_parse->{functions}{$url};
 
     $self->add_lines(
-        "+ " . $p->{name} . ' -> ' . $p->{human_ret},
+        "+ " . $p->{name} . $p->{perl_args} . ' -> ' . $p->{human_ret},
         "");
     $self->inc_indent;
 
@@ -83,7 +88,19 @@ sub _gen_function {
             }
         }
     }
-    $self->add_lines("", $self->loc("Return value") . ':');
+    $self->add_lines("", $self->loc("Return value") . ':', "");
+    $self->inc_indent;
+    $self->add_lines($self->loc(join(
+        "",
+        "Returns an enveloped result (an array). ",
+        "First element (status) is an integer containing HTTP status code ",
+        "(200 means OK, 4xx caller error, 5xx function error). Second element ",
+        "(msg) is a string containing error message, or 'OK' if status is ",
+        "200. Third element (result) is optional, the actual result. Fourth ",
+        "element (meta) is called result metadata and is optional, a hash ",
+        "that contains extra information.")))
+        unless $p->{schema}{result_naked};
+    $self->dec_indent;
 
     $self->dec_indent;
     $self->add_lines("");

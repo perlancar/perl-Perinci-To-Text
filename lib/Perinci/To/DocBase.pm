@@ -9,6 +9,7 @@ use Moo;
 has url => (is=>'rw');
 has sections => (is=>'rw');
 has function_sections => (is => 'rw');
+has wrap => (is => 'rw');
 #has method_sections => (is => 'rw');
 has lang => (is => 'rw');
 has fallback_lang => (is => 'rw');
@@ -83,12 +84,80 @@ sub dump_data {
 }
 
 sub add_lines {
-    my ($self, @l) = @_;
+    my $self = shift;
+    my $opts;
+    if (ref($_[0]) eq 'HASH') { $opts = shift }
+    $opts //= {};
+    my @lines = map { $_ . (/\n\z/s ? "" : "\n") }
+        map {/\n/ ? split /\n/ : $_} @_;
+
     my $indent = $self->indent x $self->_indent_level;
-    push @{$self->_lines},
-        map {"$indent$_" . (/\n\z/s ? "" : "\n") }
-            map {/\n/ ? split /\n/ : $_}
-                @l;
+    my $wrap = $opts->{wrap} // $self->wrap;
+    if ($wrap) {
+        require Text::Wrap;
+
+        # split into paragraphs, merge each paragraph text into a single line
+        # first
+        my @para;
+        my $i = 0;
+        my ($start, $type);
+        $type = '';
+        #$log->warnf("lines=%s", \@lines);
+        for (@lines) {
+            if (/^\s*$/) {
+                if (defined($start) && $type ne 'blank') {
+                    push @para, [$type, [@lines[$start..$i-1]]];
+                    undef $start;
+                }
+                $start //= $i;
+                $type = 'blank';
+            } elsif (/^\s{4,}\S+/ && (!$i || $type eq 'verbatim' ||
+                         (@para && $para[-1][0] eq 'blank'))) {
+                if (defined($start) && $type ne 'verbatim') {
+                    push @para, [$type, [@lines[$start..$i-1]]];
+                    undef $start;
+                }
+                $start //= $i;
+                $type = 'verbatim';
+            } else {
+                if (defined($start) && $type ne 'normal') {
+                    push @para, [$type, [@lines[$start..$i-1]]];
+                    undef $start;
+                }
+                $start //= $i;
+                $type = 'normal';
+            }
+            $log->warnf("i=%d, lines=%s, start=%s, type=%s",
+                        $i, $_, $start, $type);
+            $i++;
+        }
+        if (@para && $para[-1][0] eq $type) {
+            push @{ $para[-1][1] }, [$type, [@lines[$start..$i-1]]];
+        } else {
+            push @para, [$type, [@lines[$start..$i-1]]];
+        }
+        $log->warnf("para=%s", \@para);
+
+        my $columns //= 80 - length($indent);
+        for my $para (@para) {
+            if ($para->[0] eq 'blank') {
+                push @{$self->_lines}, @{$para->[1]};
+            } else {
+                if ($para->[0] eq 'normal') {
+                    for (@{$para->[1]}) {
+                        s/\n/ /g;
+                    }
+                    $para->[1] = [join("", @{$para->[1]}) . "\n"];
+                }
+                $log->warnf("para=%s", $para);
+                push @{$self->_lines},
+                    Text::Wrap::wrap($indent, $indent, @{$para->[1]});
+            }
+        }
+    } else {
+        push @{$self->_lines},
+            map {"$indent$_"} @lines;
+    }
 }
 
 sub inc_indent {
@@ -154,16 +223,6 @@ sub _get_langprop {
         }
     }
     $v;
-}
-
-sub _wrap_to {
-    require Text::Wrap;
-
-    my ($self, $text, $columns) = @_;
-    $columns //= 80;
-
-    local $Text::Wrap::columns = $columns;
-    Text::Wrap::wrap('', '', $text);
 }
 
 sub parse_summary {
@@ -252,6 +311,21 @@ sub fparse_arguments {
     my $p     = $self->_parse->{functions}{ $self->{_furl} };
     my $fmeta = $self->{_fmeta};
 
+    my $aa = $fmeta->{args_as};
+    my $paa;
+    if ($aa eq 'hash') {
+        $paa = '(%args)';
+    } elsif ($aa eq 'hashref') {
+        $paa = '(\%args)';
+    } elsif ($aa eq 'array') {
+        $paa = '(@args)';
+    } elsif ($aa eq 'arrayref') {
+        $paa = '(\@args)';
+    } else {
+        die "BUG: Unknown value of args_as '$aa'";
+    }
+    $p->{perl_args} = $paa;
+
     my $args  = $fmeta->{args} // {};
     $p->{args} = {};
     for my $name (keys %$args) {
@@ -288,6 +362,9 @@ sub fparse_result {
     } else {
         $p->{human_ret} = '[code, msg, result, meta]';
     }
+
+    $p->{summary}     = $self->_get_langprop($fmeta, "summary");
+    $p->{description} = $self->_get_langprop($fmeta, "description");
 }
 
 sub fgen_result {}
