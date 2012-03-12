@@ -74,9 +74,15 @@ sub gen_subcommands {
    # XXX categorize based on tags
     if ($scs) {
         for my $scn (keys %$scs) {
-            my $sc = $scs->{$scn};
-            $self->add_lines({wrap=>0}, $scn .
-                         ($sc->{summary} ? " - $sc->{summary}" : ""));
+            my $sc  = $scs->{$scn};
+            my $url = $sc->{url};
+            my $pf  = $pff->{$url};
+            my $summary;
+            $summary = $self->_get_langprop($sc, "summary");
+            if (!$summary && $pf->{schema}) {
+                $summary = $self->_get_langprop($pf->{schema}, "summary");
+            }
+            $self->add_lines({wrap=>0}, $scn . ($summary ? " - $summary" : ""));
         }
     }
 
