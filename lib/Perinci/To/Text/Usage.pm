@@ -4,7 +4,7 @@ use 5.010;
 use Log::Any '$log';
 use Moo;
 
-extends 'Perinci::To::DocBase';
+extends 'Perinci::To::Text';
 
 has cmdline => (is => 'rw'); # reference to Perinci::CmdLine object
 
@@ -18,7 +18,6 @@ sub BUILD {
 
     $self->{sections} = $args->{sections} // [
         'summary',
-        'version',
         'description',
         'subcommands',
         'links',
