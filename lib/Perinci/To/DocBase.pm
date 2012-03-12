@@ -267,10 +267,13 @@ sub fparse_arguments {
     for my $name (keys %$args) {
         my $arg = $args->{$name};
         $arg->{default_lang} //= $fmeta->{default_lang};
-        $arg->{schema}       //= ['any'=>{}];
-        my $pa = $p->{args}{$name} = {schema=>$arg->{schema}};
-        $pa->{human_arg} = $self->_sah2human($arg->{schema});
-
+        $arg->{schema} //= ['any'=>{}];
+        my $s = $arg->{schema};
+        my $pa = $p->{args}{$name} = {schema=>$s};
+        $pa->{human_arg} = $self->_sah2human($s);
+        if (defined $s->[1]{default}) {
+            $pa->{human_arg_default} = $self->dump_data_sl($s->[1]{default});
+        }
         $pa->{summary}     = $self->_get_langprop($arg, 'summary');
         $pa->{description} = $self->_get_langprop($arg, 'description',
                                               {trim_blank_lines=>1});

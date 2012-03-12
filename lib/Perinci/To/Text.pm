@@ -155,13 +155,18 @@ sub _gen_function {
             $arg_has_ct = 0;
             my $pa = $p->{args}{$name};
             $self->add_lines("") if $i++ > 0 && $prev_arg_has_ct;
-            $self->add_lines(
-                "- " . $name . ($pa->{schema}[1]{req} ? '*' : '') .
-                    ' => ' . $pa->{human_arg});
+            $self->add_lines(join(
+                "",
+                "- ", $name, ($pa->{schema}[1]{req} ? '*' : ''), ' => ',
+                $pa->{human_arg},
+                (defined($pa->{human_arg_default}) ?
+                     " (" . $self->loc("default") .
+                         ": $pa->{human_arg_default})" : "")
+            ));
             if ($pa->{summary} || $p->{description}) {
                 $arg_has_ct++;
                 $self->inc_indent;
-                $self->add_lines($pa->{summary}) if $pa->{summary};
+                $self->add_lines("", $pa->{summary}) if $pa->{summary};
                 if ($pa->{description}) {
                     $self->add_lines("", $pa->{description});
                 }
