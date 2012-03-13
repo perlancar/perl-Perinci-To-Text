@@ -9,7 +9,7 @@ our %Lexicon = %{ Locale::Maketext::Lexicon::Gettext->parse(<DATA>) };
 #use Data::Dump; dd \%Lexicon;
 
 1;
-# ABSTRACT: Indonesian translation for Perinci::To::* document generators
+# ABSTRACT: Indonesian translation for Perinci::To::DocBase
 __DATA__
 msgid  "Function"
 msgstr "Fungsi"
@@ -110,40 +110,6 @@ msgstr "Metode dari kelas induk '%1'"
 msgid  "Attributes from superclass '%1'"
 msgstr "Atribut dari kelas induk '%1'"
 
-### Text::Usage
-
-msgid  "Show version"
-msgstr "Tampilkan versi"
-
-msgid  "Display this help message"
-msgstr "Tampilkan pesan bantuan ini"
-
-msgid  "List available subcommands"
-msgstr "Daftar subperintah yang ada"
-
-msgid  "List of available subcommands"
-msgstr "Daftar subperintah yang ada"
-
-msgid  "Subcommand"
-msgstr "Subperintah"
-
-msgid  "Subcommands"
-msgstr "Subperintah"
-
-msgid  "Usage"
-msgstr "Cara pakai"
-
-msgid  "For general help, type '%1'"
-msgstr "Untuk pesan bantuan umum, ketik '%1'"
-
-msgid  "For help on a subcommand, type '%1'"
-msgstr "Untuk pesan bantuan subperintah tertentu, ketik '%1'"
-
-### POD
-
-msgid  "This module has L<Rinci> metadata"
-msgid  "Modul ini dilengkapi metadata L<Rinci>"
-
 # tmp: Sah
 
 msgid  "default"
@@ -198,16 +164,6 @@ msgstr "Nilai kembali"
 
 msgid  "Returns an enveloped result (an array). First element (status) is an integer containing HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element (msg) is a string containing error message, or 'OK' if status is 200. Third element (result) is optional, the actual result. Fourth element (meta) is called result metadata and is optional, a hash that contains extra information."
 msgstr "Mengembalikan hasil terbungkus (larik). Elemen pertama (status) adalah bilangan bulat berisi kode status HTTP (200 berarti OK, 4xx kesalahan di pemanggil, 5xx kesalahan di fungsi). Elemen kedua (msg) adalah string berisi pesan kesalahan, atau 'OK' jika status 200. Elemen ketiga (result) bersifat opsional, berisi hasil yang diinginkan. Elemen keempat (meta) disebut metadata hasil, bersifat opsional, berupa hash informasi tambahan."
-
-### function/Text::Usage
-
-msgid  "or as argument #%1"
-msgstr "atau sebagai argumen #%1"
-
-### function/POD
-
-msgid  "None are exported by default, but they are exportable."
-msgstr "Tidak ada yang diekspor secara otomatis, tapi dapat diekspor."
 
 # function features
 

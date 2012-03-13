@@ -9,7 +9,7 @@ our %Lexicon = %{ Locale::Maketext::Lexicon::Gettext->parse(<DATA>) };
 #use Data::Dump; dd \%Lexicon;
 
 1;
-# ABSTRACT: English translation for Perinci::To::* document generators
+# ABSTRACT: English translation for Perinci::To::DocBase
 __DATA__
 msgid  "Function"
 msgstr "Function"
@@ -110,40 +110,6 @@ msgstr "Methods from superclass '%1'"
 msgid  "Attributes from superclass '%1'"
 msgstr "Attributes from superclass '%1'"
 
-### Text::Usage
-
-msgid  "Show version"
-msgstr "Show version"
-
-msgid  "Display this help message"
-msgstr "Display this help message"
-
-msgid  "List available subcommands"
-msgstr "List available subcommands"
-
-msgid  "List of available subcommands"
-msgstr "List of available subcommands"
-
-msgid  "Subcommand"
-msgstr "Subcommand"
-
-msgid  "Subcommands"
-msgstr "Subcommands"
-
-msgid  "Usage"
-msgstr "Usage"
-
-msgid  "For general help, type '%1'"
-msgstr "For general help, type '%1'"
-
-msgid  "For help on a subcommand, type '%1'"
-msgstr "For help on a subcommand, type '%1'"
-
-### POD
-
-msgid  "This module has L<Rinci> metadata"
-msgid  "This module has L<Rinci> metadata"
-
 # tmp: Sah
 
 msgid  "default"
@@ -198,16 +164,6 @@ msgstr "Return value"
 
 msgid  "Returns an enveloped result (an array). First element (status) is an integer containing HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element (msg) is a string containing error message, or 'OK' if status is 200. Third element (result) is optional, the actual result. Fourth element (meta) is called result metadata and is optional, a hash that contains extra information."
 msgstr "Returns an enveloped result (an array). First element (status) is an integer containing HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element (msg) is a string containing error message, or 'OK' if status is 200. Third element (result) is optional, the actual result. Fourth element (meta) is called result metadata and is optional, a hash that contains extra information."
-
-### function/Text::Usage
-
-msgid  "or as argument #%1"
-msgstr "or as argument #%1"
-
-### function/POD
-
-msgid  "None are exported by default, but they are exportable."
-msgstr "None are exported by default, but they are exportable."
 
 # function features
 

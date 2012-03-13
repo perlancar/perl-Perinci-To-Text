@@ -11,6 +11,7 @@ has function_sections => (is => 'rw');
 has lang => (is => 'rw');
 has fallback_lang => (is => 'rw');
 has mark_fallback_text => (is => 'rw', default=>sub{1});
+has loc_class => (is => 'rw');
 has _pa => (is => 'rw'); # store Perinci::Access object
 has _lines => (is => 'rw'); # store final result, array
 has _parse => (is => 'rw'); # store parsed items, hash
@@ -46,15 +47,6 @@ sub BUILD {
     $self->{method_sections} //= $self->{function_sections};
     $self->{lang} //= "en_US";
     $self->{fallback_lang} //= "en_US";
-
-    my $class = ref($self) . '::I18N';
-    $class = __PACKAGE__.'::I18N'
-        unless SHARYANTO::Package::Util::package_exists($class);
-    Module::Load::load $class;
-    $self->{_loc_class} = $class;
-    $self->{_loc_obj}   = $class->new;
-    $self->{_lh}        = $self->{_loc_obj}->get_handle($self->lang)
-        or die "Can't determine language";
 }
 
 sub add_section_before {
@@ -472,9 +464,23 @@ sub parse_links {
 
 sub gen_links {}
 
+sub _init_lh {
+    my ($self) = @_;
+    return if $self->{_lh};
+
+    my $default_class = ref($self) . '::I18N';
+    $self->{loc_class} //= $default_class;
+    Module::Load::load($self->{loc_class});
+    $self->{_loc_obj}   = $self->{loc_class}->new;
+    $self->{_lh}        = $self->{_loc_obj}->get_handle($self->lang)
+        or die "Can't determine language";
+}
+
 sub generate {
     my ($self, %opts) = @_;
     $log->tracef("-> generate(opts=%s)", \%opts);
+
+    $self->_init_lh;
 
     # let's retrieve the metadatas first
 
