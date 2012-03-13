@@ -173,3 +173,12 @@ msgstr "Fungsi ini mendukung operasi undo (pembatalan). Silakan baca 'The undo p
 msgid  "This function is declared as %1 (%2). Please read the '%1' feature in Rinci::function specification."
 msgid  "Fungsi ini dideklarasikan %1 (%2). Silakan baca fitur '%1' di spesifikasi Rinci::function."
 
+# test multiline
+
+msgid  ""
+"Line 1"
+"Line 2"
+msgstr ""
+"Baris 1"
+"Baris 2"
+

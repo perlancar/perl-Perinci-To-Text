@@ -192,6 +192,9 @@ sub _gen_function {
 
     $self->dec_indent;
     $self->add_lines("");
+
+    # test
+    #$self->add_lines({wrap=>0}, "Line 1\nLine 2\n");
 }
 
 sub gen_functions {

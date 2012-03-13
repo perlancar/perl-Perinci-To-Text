@@ -173,3 +173,11 @@ msgstr "This function supports undo operation. Please read 'The undo protocol' i
 msgid  "This function is declared as %1 (%2). Please read the '%1' feature in Rinci::function specification."
 msgid  "This function is declared as %1 (%2). Please read the '%1' feature in Rinci::function specification."
 
+# test multiline
+
+msgid  ""
+"Line 1"
+"Line 2"
+msgstr ""
+"Line 1"
+"Line 2"
