@@ -57,13 +57,105 @@ sub BUILD {
         or die "Can't determine language";
 }
 
-#sub add_section {
-#    my ($self, $name, $after) = @_;
-#}
+sub add_section_before {
+    my ($self, $name, $before) = @_;
+    my $ss = $self->sections;
+    return unless $ss;
+    my $i = 0;
+    my $added;
+    while ($i < @$ss && defined($before)) {
+        if ($ss->[$i] eq $before) {
+            my $pos = $i;
+            splice @$ss, $pos, 0, $name;
+            $added++;
+            last;
+        }
+        $i++;
+    }
+    unshift @$ss, $name unless $added;
+}
 
-#sub delete_section {
-#    my ($self, $name) = @_;
-#}
+sub add_section_after {
+    my ($self, $name, $after) = @_;
+    my $ss = $self->sections;
+    return unless $ss;
+    my $i = 0;
+    my $added;
+    while ($i < @$ss && defined($after)) {
+        if ($ss->[$i] eq $after) {
+            my $pos = $i+1;
+            splice @$ss, $pos, 0, $name;
+            $added++;
+            last;
+        }
+        $i++;
+    }
+    push @$ss, $name unless $added;
+}
+
+sub add_function_section_before {
+    my ($self, $name, $before) = @_;
+    my $ss = $self->function_sections;
+    return unless $ss;
+    my $i = 0;
+    my $added;
+    while ($i < @$ss && defined($before)) {
+        if ($ss->[$i] eq $before) {
+            my $pos = $i;
+            splice @$ss, $pos, 0, $name;
+            $added++;
+            last;
+        }
+        $i++;
+    }
+    unshift @$ss, $name unless $added;
+}
+
+sub add_function_section_after {
+    my ($self, $name, $after) = @_;
+    my $ss = $self->function_sections;
+    return unless $ss;
+    my $i = 0;
+    my $added;
+    while ($i < @$ss && defined($after)) {
+        if ($ss->[$i] eq $after) {
+            my $pos = $i+1;
+            splice @$ss, $pos, 0, $name;
+            $added++;
+            last;
+        }
+        $i++;
+    }
+    push @$ss, $name unless $added;
+}
+
+sub delete_section {
+    my ($self, $name) = @_;
+    my $ss = $self->sections;
+    return unless $ss;
+    my $i = 0;
+    while ($i < @$ss) {
+        if ($ss->[$i] eq $name) {
+            splice @$ss, $i, 1;
+        } else {
+            $i++;
+        }
+    }
+}
+
+sub delete_function_section {
+    my ($self, $name) = @_;
+    my $ss = $self->function_sections;
+    return unless $ss;
+    my $i = 0;
+    while ($i < @$ss) {
+        if ($ss->[$i] eq $name) {
+            splice @$ss, $i, 1;
+        } else {
+            $i++;
+        }
+    }
+}
 
 # return single-line dump of data structure, e.g. "[1, 2, 3]" (no trailing
 # newlines either).
