@@ -1,5 +1,11 @@
 Revision history for Perinci-To-Text
 
+0.06     2012-03-13
+
+         No functional changes. Split project localization class to subclasses,
+         one for each document subclass.
+
+
 0.05     2012-03-13
 
          Rename distribution from Sub-Spec-To-Text to Perinci-To-Text. Follow
