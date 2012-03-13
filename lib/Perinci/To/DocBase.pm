@@ -45,6 +45,14 @@ sub BUILD {
         'links',
     ];
     $self->{method_sections} //= $self->{function_sections};
+    if (!defined($self->{lang}) && $ENV{LANG}) {
+        my $l = $ENV{LANG}; $l =~ s/^\W.*//;
+        $self->{lang} = $l;
+    }
+    if (!defined($self->{lang}) && $ENV{LANGUAGE}) {
+        my $l = $ENV{LANGUAGE}; $l =~ s/^\W.*//;
+        $self->{lang} = $l;
+    }
     $self->{lang} //= "en_US";
     $self->{fallback_lang} //= "en_US";
 }
@@ -478,7 +486,7 @@ sub _init_lh {
 
 sub generate {
     my ($self, %opts) = @_;
-    $log->tracef("-> generate(opts=%s)", \%opts);
+    $log->tracef("-> generate(opts=%s), lang=%s", \%opts, $self->lang);
 
     $self->_init_lh;
 
