@@ -27,7 +27,7 @@ sub BUILD {
     require SHARYANTO::Package::Util;
 
     my ($self, $args) = @_;
-    $self->{url} or die "Please specify url";
+    #$self->{url} or die "Please specify url";
     $self->{_pa} //= Perinci::Access->new;
     $self->{sections} //= [
         'summary',
