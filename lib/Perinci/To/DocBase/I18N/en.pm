@@ -130,6 +130,12 @@ msgstr "Subcommand"
 msgid  "Subcommands"
 msgstr "Subcommands"
 
+msgid  "Usage"
+msgstr "Usage"
+
+msgid  "For general help, type '%1'"
+msgstr "For general help, type '%1'"
+
 msgid  "For help on a subcommand, type '%1'"
 msgstr "For help on a subcommand, type '%1'"
 

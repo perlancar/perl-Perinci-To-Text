@@ -130,6 +130,12 @@ msgstr "Subperintah"
 msgid  "Subcommands"
 msgstr "Subperintah"
 
+msgid  "Usage"
+msgstr "Cara pakai"
+
+msgid  "For general help, type '%1'"
+msgstr "Untuk pesan bantuan umum, ketik '%1'"
+
 msgid  "For help on a subcommand, type '%1'"
 msgstr "Untuk pesan bantuan subperintah tertentu, ketik '%1'"
 
