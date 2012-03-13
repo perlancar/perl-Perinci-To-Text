@@ -64,11 +64,11 @@ sub BUILD {
     ];
     $self->{method_sections} //= $self->{function_sections};
     if (!defined($self->{lang}) && $ENV{LANG}) {
-        my $l = $ENV{LANG}; $l =~ s/^\W.*//;
+        my $l = $ENV{LANG}; $l =~ s/\W.*//;
         $self->{lang} = $l;
     }
     if (!defined($self->{lang}) && $ENV{LANGUAGE}) {
-        my $l = $ENV{LANGUAGE}; $l =~ s/^\W.*//;
+        my $l = $ENV{LANGUAGE}; $l =~ s/\W.*//;
         $self->{lang} = $l;
     }
     $self->{lang} //= "en_US";
