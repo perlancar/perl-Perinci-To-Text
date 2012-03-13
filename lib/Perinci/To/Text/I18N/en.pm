@@ -11,3 +11,6 @@ our %Lexicon = %{ Locale::Maketext::Lexicon::Gettext->parse(<DATA>) };
 1;
 # ABSTRACT: English translation for Perinci::To::Text
 __DATA__
+msgid  ""
+msgstr ""
+
