@@ -4,6 +4,8 @@ use base 'Perinci::To::DocBase::I18N';
 use Locale::Maketext::Lexicon::Gettext;
 our %Lexicon = %{ Locale::Maketext::Lexicon::Gettext->parse(<DATA>) };
 
+# VERSION
+
 #use Data::Dump; dd \%Lexicon;
 
 1;

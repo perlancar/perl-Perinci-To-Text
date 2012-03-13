@@ -4,8 +4,6 @@ use 5.010;
 use Log::Any '$log';
 use Moo;
 
-# VERSION
-
 has url => (is=>'rw');
 has sections => (is=>'rw');
 has function_sections => (is => 'rw');
@@ -19,6 +17,8 @@ has _parse => (is => 'rw'); # store parsed items, hash
 has _lh => (is => 'rw'); # store localize handle
 has _indent_level => (is => 'rw');
 has indent => (is => 'rw', default => sub{"  "}); # indent character
+
+# VERSION
 
 sub BUILD {
     require Module::Load;

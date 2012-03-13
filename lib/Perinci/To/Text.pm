@@ -8,6 +8,8 @@ extends 'Perinci::To::DocBase';
 
 has wrap => (is => 'rw', default=>sub{1});
 
+# VERSION
+
 sub BUILD {
     my ($self, $args) = @_;
 }
