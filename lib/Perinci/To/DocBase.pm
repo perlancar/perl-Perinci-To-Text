@@ -383,7 +383,7 @@ sub fparse_result {
     if ($fmeta->{result_naked}) {
         $p->{human_ret} = $p->{human_res};
     } else {
-        $p->{human_ret} = '[code, msg, result, meta]';
+        $p->{human_ret} = '[status, msg, result, meta]';
     }
 
     $p->{summary}     = $self->_get_langprop($fmeta, "summary");
