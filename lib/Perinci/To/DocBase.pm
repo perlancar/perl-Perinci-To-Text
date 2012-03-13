@@ -11,18 +11,36 @@ has function_sections => (is => 'rw');
 has lang => (is => 'rw');
 has fallback_lang => (is => 'rw');
 has mark_fallback_text => (is => 'rw', default=>sub{1});
-has loc_class => (is => 'rw');
 has _pa => (is => 'rw'); # store Perinci::Access object
 has _lines => (is => 'rw'); # store final result, array
 has _parse => (is => 'rw'); # store parsed items, hash
-has _lh => (is => 'rw'); # store localize handle
+has loc_class => (
+    is => 'rw',
+    default => sub {
+        my $self = shift;
+        ref($self) . '::I18N';
+    },
+); # store name of localize (project) class
+has lh => (
+    is => 'rw',
+    lazy => 1,
+    default => sub {
+        require Module::Load;
+
+        my $self = shift;
+        Module::Load::load($self->loc_class);
+        my $obj = $self->loc_class->new;
+        my $lh = $obj->get_handle($self->lang)
+            or die "Can't determine language";
+        $lh;
+    },
+); # store localize handle
 has _indent_level => (is => 'rw');
 has indent => (is => 'rw', default => sub{"  "}); # indent character
 
 # VERSION
 
 sub BUILD {
-    require Module::Load;
     require Perinci::Access;
     require SHARYANTO::Package::Util;
 
@@ -203,7 +221,7 @@ sub dec_indent {
 
 sub loc {
     my ($self, @args) = @_;
-    $self->_lh->maketext(@args);
+    $self->lh->maketext(@args);
 }
 
 sub _trim_blank_lines {
@@ -472,23 +490,9 @@ sub parse_links {
 
 sub gen_links {}
 
-sub _init_lh {
-    my ($self) = @_;
-    return if $self->{_lh};
-
-    my $default_class = ref($self) . '::I18N';
-    $self->{loc_class} //= $default_class;
-    Module::Load::load($self->{loc_class});
-    $self->{_loc_obj}   = $self->{loc_class}->new;
-    $self->{_lh}        = $self->{_loc_obj}->get_handle($self->lang)
-        or die "Can't determine language";
-}
-
 sub generate {
     my ($self, %opts) = @_;
     $log->tracef("-> generate(opts=%s), lang=%s", \%opts, $self->lang);
-
-    $self->_init_lh;
 
     # let's retrieve the metadatas first
 
@@ -543,7 +547,7 @@ sub generate {
 DocBase is the base class for classes that produce documentation from Rinci
 metadata. It provides i18n class using L<Locale::Maketext>
 (L<Perinci::To::DocBase::I18N>) and you can access the language handle at
-$self->_lh.
+$self->lh.
 
 To generate a documentation, first you provide a list of section names in
 C<sections>. Then you run C<generate()>, which will call C<parse_SECTION> and
