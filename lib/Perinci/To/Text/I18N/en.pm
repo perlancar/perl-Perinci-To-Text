@@ -1,5 +1,5 @@
 package Perinci::To::Text::I18N::en;
-use parent qw(Perinci::To::Text::I18N Perinci::To::DocBase::I18N::en);
+use parent qw(Perinci::To::Text::I18N Perinci::To::PackageBase::I18N::en);
 
 use Locale::Maketext::Lexicon::Gettext;
 our %Lexicon = %{ Locale::Maketext::Lexicon::Gettext->parse(<DATA>) };

@@ -4,7 +4,7 @@ use 5.010;
 use Log::Any '$log';
 use Moo;
 
-extends 'Perinci::To::DocBase';
+extends 'Perinci::To::PackageBase';
 
 has wrap => (is => 'rw', default=>sub{1});
 
@@ -214,6 +214,6 @@ sub gen_functions {
 }
 
 1;
-# ABSTRACT: Generate text documentation from Rinci metadata
+# ABSTRACT: Generate text documentation from Rinci package metadata
 
 =cut

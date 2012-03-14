@@ -1,6 +1,6 @@
 package Perinci::To::Text::I18N;
 
-use parent 'Perinci::To::DocBase::I18N';
+use parent 'Perinci::To::PackageBase::I18N';
 
 # VERSION
 

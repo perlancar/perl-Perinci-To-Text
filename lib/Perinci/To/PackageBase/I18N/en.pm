@@ -1,5 +1,5 @@
-package Perinci::To::DocBase::I18N::id;
-use base 'Perinci::To::DocBase::I18N';
+package Perinci::To::PackageBase::I18N::en;
+use base 'Perinci::To::PackageBase::I18N';
 
 use Locale::Maketext::Lexicon::Gettext;
 our %Lexicon = %{ Locale::Maketext::Lexicon::Gettext->parse(<DATA>) };
@@ -9,169 +9,169 @@ our %Lexicon = %{ Locale::Maketext::Lexicon::Gettext->parse(<DATA>) };
 #use Data::Dump; dd \%Lexicon;
 
 1;
-# ABSTRACT: Indonesian translation for Perinci::To::DocBase
+# ABSTRACT: English translation for Perinci::To::PackageBase
 __DATA__
 msgid  "Function"
-msgstr "Fungsi"
+msgstr "Function"
 
 msgid  "Functions"
-msgstr "Fungsi"
+msgstr "Functions"
 
 msgid  "General functions"
-msgstr "Fungsi umum"
+msgstr "General functions"
 
 msgid  "Functions related to '%1'"
-msgstr "Fungsi yang berkaitan dengan '%1'"
+msgstr "Functions related to '%1'"
 
 msgid  "Variable"
-msgstr "Variabel"
+msgstr "Variable"
 
 msgid  "Variables"
-msgstr "Variabel"
+msgstr "Variables"
 
 msgid  "General variables"
-msgstr "Variabel umum"
+msgstr "General variables"
 
 msgid  "Variables related to '%1'"
-msgstr "Variabel yang berkaitan dengan '%1'"
+msgstr "Variables related to '%1'"
 
 msgid  "Method"
-msgstr "Metode"
+msgstr "Method"
 
 msgid  "Methods"
-msgstr "Metode"
+msgstr "Methods"
 
 msgid  "General methods"
-msgstr "Metode umum"
+msgstr "General methods"
 
 msgid  "Methods related to '%1'"
-msgstr "Metode yang berkaitan dengan '%1'"
+msgstr "Methods related to '%1'"
 
 msgid  "Attribute"
-msgstr "Atribut"
+msgstr "Attribute"
 
 msgid  "Attributes"
-msgstr "Atribut"
+msgstr "Attributes"
 
 msgid  "General attributes"
-msgstr "Atribut umum"
+msgstr "General attributes"
 
 msgid  "Attributes related to '%1'"
-msgstr "Atribut yang berkaitan dengan '%1'"
+msgstr "Attributes related to '%1'"
 
 msgid  "Subpackages"
-msgstr "Subpaket"
+msgstr "Subpackages"
 
 msgid  "Name"
-msgstr "Nama"
-
-msgid  "Version"
-msgstr "Versi"
+msgstr "Name"
 
 msgid  "Summary"
-msgstr "Ringkasan"
+msgstr "Summary"
+
+msgid  "Version"
+msgstr "Version"
 
 msgid  "Description"
-msgstr "Deskripsi"
+msgstr "Description"
 
 msgid  "Examples"
-msgstr "Contoh"
+msgstr "Examples"
 
 msgid  "See Also"
-msgstr "Lihat Juga"
+msgstr "See Also"
 
 msgid  "Links"
-msgstr "Tautan"
+msgstr "Links"
 
 msgid  "Tags"
-msgstr "Tag"
+msgstr "Tags"
 
 msgid  "Categories"
-msgstr "Kategori"
+msgstr "Categories"
 
 msgid  "Category"
-msgstr "Kategori"
+msgstr "Category"
 
 msgid  "This package does not have functions"
-msgstr "Paket ini tidak memiliki fungsi"
+msgstr "This package does not have functions"
 
 msgid  "This package does not have variables"
-msgstr "Paket ini tidak memiliki variabel"
+msgstr "This package does not have variables"
 
 msgid  "This class does not add any method of its own"
-msgstr "Kelas ini tidak menambahkan metode apa-apa"
+msgstr "This class does not add any method of its own"
 
 msgid  "This class does not add any attribute of its own"
-msgstr "Kelas ini tidak menambahkan atribut apa-apa"
+msgstr "This class does not add any attribute of its own"
 
 msgid  "Methods from superclass '%1'"
-msgstr "Metode dari kelas induk '%1'"
+msgstr "Methods from superclass '%1'"
 
 msgid  "Attributes from superclass '%1'"
-msgstr "Atribut dari kelas induk '%1'"
+msgstr "Attributes from superclass '%1'"
 
 # tmp: Sah
 
 msgid  "default"
-msgstr "bawaan"
+msgstr "default"
 
 msgid  "value in"
-msgstr "nilai antara"
+msgstr "value in"
 
 msgid  "required"
-msgstr "wajib"
+msgstr "required"
 
 msgid  "optional"
-msgstr "opsional"
+msgstr "optional"
 
 msgid  "minimum"
 msgstr "minimum"
 
 msgid  "maximum"
-msgstr "maksimum"
+msgstr "maximum"
 
 msgid  "less than"
-msgstr "kurang dari"
+msgstr "less than"
 
 msgid  "greater than"
-msgstr "lebih dari"
+msgstr "greater than"
 
 msgid  "between %1 and %2"
-msgstr "antara %1 dan %2"
+msgstr "between %1 and %2"
 
 msgid  "between %1 and %2 (exclusive)"
-msgstr "antara %1 dan %2 (tidak termasuk ujung)"
+msgstr "between %1 and %2 (exclusive)"
 
 # function
 
 msgid  "Arguments"
-msgstr "Argumen"
+msgstr "Arguments"
 
 msgid  "General arguments"
-msgstr "Argumen umum"
+msgstr "General arguments"
 
 msgid  "Arguments related to '%1'"
-msgstr "Argumen yang berkaitan dengan '%1'"
+msgstr "Arguments related to '%1'"
 
 msgid  "'*' denotes required arguments"
-msgstr "'*' menandakan argumen wajib"
+msgstr "'*' denotes required arguments"
 
 msgid  "Result"
-msgstr "Hasil"
+msgstr "Result"
 
 msgid  "Return value"
-msgstr "Nilai kembali"
+msgstr "Return value"
 
 msgid  "Returns an enveloped result (an array). First element (status) is an integer containing HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element (msg) is a string containing error message, or 'OK' if status is 200. Third element (result) is optional, the actual result. Fourth element (meta) is called result metadata and is optional, a hash that contains extra information."
-msgstr "Mengembalikan hasil terbungkus (larik). Elemen pertama (status) adalah bilangan bulat berisi kode status HTTP (200 berarti OK, 4xx kesalahan di pemanggil, 5xx kesalahan di fungsi). Elemen kedua (msg) adalah string berisi pesan kesalahan, atau 'OK' jika status 200. Elemen ketiga (result) bersifat opsional, berisi hasil yang diinginkan. Elemen keempat (meta) disebut metadata hasil, bersifat opsional, berupa hash informasi tambahan."
+msgstr "Returns an enveloped result (an array). First element (status) is an integer containing HTTP status code (200 means OK, 4xx caller error, 5xx function error). Second element (msg) is a string containing error message, or 'OK' if status is 200. Third element (result) is optional, the actual result. Fourth element (meta) is called result metadata and is optional, a hash that contains extra information."
 
 # function features
 
 msgid  "This function supports undo operation. Please read 'The undo protocol' in Rinci::function specification."
-msgstr "Fungsi ini mendukung operasi undo (pembatalan). Silakan baca 'The undo protocol' di spesifikasi Rinci::function."
+msgstr "This function supports undo operation. Please read 'The undo protocol' in Rinci::function specification."
 
 msgid  "This function is declared as %1 (%2). Please read the '%1' feature in Rinci::function specification."
-msgid  "Fungsi ini dideklarasikan %1 (%2). Silakan baca fitur '%1' di spesifikasi Rinci::function."
+msgid  "This function is declared as %1 (%2). Please read the '%1' feature in Rinci::function specification."
 
 # test multiline
 
@@ -179,6 +179,5 @@ msgid  ""
 "Line 1"
 "Line 2"
 msgstr ""
-"Baris 1"
-"Baris 2"
-
+"Line 1"
+"Line 2"
