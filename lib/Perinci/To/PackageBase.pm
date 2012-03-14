@@ -17,6 +17,8 @@ has _pa => (
     },
 ); # store Perinci::Access object
 
+# VERSION
+
 sub BUILD {
     require Perinci::Access;
 
