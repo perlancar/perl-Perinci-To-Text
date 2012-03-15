@@ -7,8 +7,6 @@ use Moo;
 extends 'Perinci::To::PackageBase';
 with    'Perinci::To::Text::AddDocLinesRole';
 
-has wrap => (is => 'rw', default=>sub{1});
-
 # VERSION
 
 sub BUILD {

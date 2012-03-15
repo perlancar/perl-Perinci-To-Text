@@ -6,6 +6,8 @@ use Moo::Role;
 
 # VERSION
 
+has wrap => (is => 'rw', default => sub {1});
+
 sub add_doc_lines {
     my $self = shift;
     my $opts;
@@ -95,5 +97,17 @@ separated from L<Perinci::To::Text> so other modules can use it (e.g.
 L<Perinci::CmdLine>, which also generates help/usage message).
 
 To change width of columns, set C<$Text::Wrap::columns>.
+
+
+=head1 ATTRIBUTES
+
+=head2 wrap => BOOL (default 1)
+
+Whether to do text wrapping.
+
+
+=head1 METHODS
+
+=head2 $o->add_doc_lines([$opts, ]@lines)
 
 =cut
