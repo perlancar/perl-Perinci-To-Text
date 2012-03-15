@@ -1,10 +1,15 @@
 package Perinci::To::PackageBase;
 
 use 5.010;
+use Data::Dump::OneLine qw(dump1);
 use Log::Any '$log';
 use Moo;
+use Perinci::Object;
+use Perinci::ToUtil;
 
-extends 'SHARYANTO::Doc::Base';
+with 'SHARYANTO::Role::Doc::Section';
+with 'SHARYANTO::Role::I18N';
+with 'SHARYANTO::Role::I18NRinci';
 
 has url => (is=>'rw');
 has function_sections => (is => 'rw');
@@ -24,7 +29,7 @@ sub BUILD {
 
     my ($self, $args) = @_;
     $self->{url} or die "Please specify url";
-    $self->{sections} //= [
+    $self->{doc_sections} //= [
         'summary',
         'version',
         'description',
@@ -40,6 +45,20 @@ sub BUILD {
         'links',
     ];
     #$self->{method_sections} //= $self->{function_sections};
+}
+
+sub add_doc_lines {
+    my $self = shift;
+    my $opts;
+    if (ref($_[0]) eq 'HASH') { $opts = shift }
+    $opts //= {};
+
+    my @lines = map { $_ . (/\n\z/s ? "" : "\n") }
+        map {/\n/ ? split /\n/ : $_} @_;
+
+    my $indent = $self->indent x $self->indent_level;
+    push @{$self->doc_lines},
+        map {"$indent$_"} @lines;
 }
 
 sub add_function_section_before {
@@ -92,7 +111,7 @@ sub delete_function_section {
     }
 }
 
-sub parse_summary {
+sub doc_parse_summary {
     my ($self) = @_;
 
     my ($name, $summary);
@@ -106,76 +125,60 @@ sub parse_summary {
     }
 
     if ($self->{_meta}) {
-        $name = $self->_get_langprop($self->{_meta}, "name");
-        $summary = $self->_get_langprop($self->{_meta}, "summary");
+        $name    = $self->langprop($self->{_meta}, "name");
+        $summary = $self->langprop($self->{_meta}, "summary");
     }
     $name //= $modname;
     $summary = "";
 
-    $self->{_parse}{name}    = $name;
-    $self->{_parse}{summary} = $summary;
+    $self->doc_parse->{name}    = $name;
+    $self->doc_parse->{summary} = $summary;
 }
 
-sub gen_summary {}
+sub doc_gen_summary {}
 
-sub parse_version {
+sub doc_parse_version {
     # already in meta's pkg_version
 }
 
-sub gen_version {}
+sub doc_gen_version {}
 
-sub parse_description {
+sub doc_parse_description {
     my ($self) = @_;
 
-    $self->{_parse}{description} = $self->{_meta} ?
-        $self->_get_langprop($self->{_meta}, "description",
-                             {trim_blank_lines=>1}) : undef;
+    $self->doc_parse->{description} = $self->{_meta} ?
+        $self->langprop($self->{_meta}, "description") : undef;
 }
 
-sub gen_description {}
+sub doc_gen_description {}
 
-sub fparse_summary {
+sub fdoc_parse_summary {
     my ($self) = @_;
-    my $p = $self->_parse->{functions}{ $self->{_furl} };
+    my $p = $self->doc_parse->{functions}{ $self->{_furl} };
 
-    my $name = $self->_get_langprop($self->{_fmeta}, "name");
+    my $name = $self->langprop($self->{_fmeta}, "name");
     if (!$name) {
         $self->{_furl} =~ m!.+/(.+)!;
         $name = $1;
     }
-    my $summary = $self->_get_langprop($self->{_fmeta}, "summary");
+    my $summary = $self->langprop($self->{_fmeta}, "summary");
     $p->{name}    = $name;
     $p->{summary} = $summary;
 }
 
-sub fgen_summary {}
+sub fdoc_gen_summary {}
 
-sub fparse_description {
-}
+sub fdoc_parse_description {}
 
-sub fgen_description {}
+sub fdoc_gen_description {}
 
-# XXX generate human-readable short description of schema, this will be
-# handled in the future by Sah itself (using the human compiler)
-sub _sah2human {
-    require Data::Sah;
-    require List::MoreUtils;
+sub fdoc_parse_links {}
 
-    my ($self, $s) = @_;
-    if ($s->[0] eq 'any') {
-        my @alts    = map {Data::Sah::normalize_schema($_)}
-            @{$s->[1]{of} // []};
-        my @types   = map {$_->[0]} @alts;
-        @types      = sort List::MoreUtils::uniq(@types);
-        return join("|", @types) || 'any';
-    } else {
-        return $s->[0];
-    }
-}
+sub fdoc_gen_links {}
 
-sub fparse_arguments {
+sub fdoc_parse_arguments {
     my ($self) = @_;
-    my $p     = $self->_parse->{functions}{ $self->{_furl} };
+    my $p     = $self->doc_parse->{functions}{ $self->{_furl} };
     my $fmeta = $self->{_fmeta};
 
     my $aa = $fmeta->{args_as};
@@ -201,31 +204,30 @@ sub fparse_arguments {
         $arg->{schema} //= ['any'=>{}];
         my $s = $arg->{schema};
         my $pa = $p->{args}{$name} = {schema=>$s};
-        $pa->{human_arg} = $self->_sah2human($s);
+        $pa->{human_arg} = Perinci::ToUtil::sah2human_short($s);
         if (defined $s->[1]{default}) {
-            $pa->{human_arg_default} = $self->dump_data_sl($s->[1]{default});
+            $pa->{human_arg_default} = dump1($s->[1]{default});
         }
-        $pa->{summary}     = $self->_get_langprop($arg, 'summary');
-        $pa->{description} = $self->_get_langprop($arg, 'description',
-                                              {trim_blank_lines=>1});
+        $pa->{summary}     = $self->langprop($arg, 'summary');
+        $pa->{description} = $self->langprop($arg, 'description');
     }
 }
 
-sub fgen_arguments {}
+sub fdoc_gen_arguments {}
 
-sub fparse_examples {
+sub fdoc_parse_examples {
 }
 
-sub fgen_examples {}
+sub fdoc_gen_examples {}
 
-sub fparse_result {
+sub fdoc_parse_result {
     my ($self) = @_;
-    my $p     = $self->_parse->{functions}{ $self->{_furl} };
+    my $p     = $self->doc_parse->{functions}{ $self->{_furl} };
     my $fmeta = $self->{_fmeta};
 
     $p->{res_schema} = $fmeta->{result} ? $fmeta->{result}{schema} : undef;
     $p->{res_schema} //= [any => {}];
-    $p->{human_res} = $self->_sah2human($p->{res_schema});
+    $p->{human_res} = Perinci::ToUtil::sah2human_short($p->{res_schema});
 
     if ($fmeta->{result_naked}) {
         $p->{human_ret} = $p->{human_res};
@@ -233,19 +235,15 @@ sub fparse_result {
         $p->{human_ret} = '[status, msg, result, meta]';
     }
 
-    $p->{summary}     = $self->_get_langprop($fmeta, "summary");
-    $p->{description} = $self->_get_langprop($fmeta, "description");
+    $p->{summary}     = $self->langprop($fmeta, "summary");
+    $p->{description} = $self->langprop($fmeta, "description");
 }
 
-sub fgen_result {}
+sub fdoc_gen_result {}
 
-sub fparse_links {
-}
-
-sub fgen_links {}
-
-sub _parse_function {
+sub _fdoc_parse {
     my ($self, $url) = @_;
+    $log->tracef("=> _fdoc_parse(url=%s)", $url);
 
     my $fmeta;
     my $found;
@@ -268,52 +266,52 @@ sub _parse_function {
     $self->{_furl} = $url;
     $self->{_fmeta} = $fmeta;
 
-    $self->_parse->{functions}{$url} = {meta=>$fmeta};
+    $self->doc_parse->{functions}{$url} = {meta=>$fmeta};
     for my $s (@{ $self->function_sections // [] }) {
-        my $meth = "fparse_$s";
+        my $meth = "fdoc_parse_$s";
         $log->tracef("=> $meth()");
         $self->$meth;
     }
 }
 
-sub _gen_function {
+sub _fdoc_gen {
     my ($self, $url, %opts) = @_;
-    $log->tracef("-> _gen_function(url=%s, opts=%s)", $url, \%opts);
+    $log->tracef("=> _fdoc_gen(url=%s, opts=%s)", $url, \%opts);
 
-    my $p = $self->_parse->{functions}{$url};
+    my $p = $self->doc_parse->{functions}{$url};
     for my $s (@{ $self->function_sections // [] }) {
-        my $meth = "fgen_$s";
+        my $meth = "fdoc_gen_$s";
         $log->tracef("=> $meth()");
         $self->$meth;
     }
 }
 
-sub parse_functions {
+sub doc_parse_functions {
     my ($self) = @_;
 
     for my $e (@{ $self->{_children} }) {
         next unless $e->{type} eq 'function';
-        $self->_parse_function($e->{uri});
+        $self->_fdoc_parse($e->{uri});
     }
 }
 
-sub gen_functions {
+sub doc_gen_functions {
     my ($self) = @_;
 
     for my $e (@{ $self->{_children} }) {
         next unless $e->{type} eq 'function';
-        $self->_gen_function($e->{uri});
+        $self->_fdoc_gen($e->{uri});
     }
 }
 
-sub parse_links {
+sub doc_parse_links {
 }
 
-sub gen_links {}
+sub doc_gen_links {}
 
-sub generate {
+sub before_generate_doc {
     my ($self, %opts) = @_;
-    $log->tracef("-> PackageBase's generate(opts=%s)", \%opts);
+    $log->tracef("=> PackageBase's before_generate_doc(opts=%s)", \%opts);
 
     # let's retrieve the metadatas first
 
@@ -342,10 +340,6 @@ sub generate {
     $self->{_child_metas} = $res->[2];
     #$log->tracef("child_metas=%s", $self->{_child_metas});
 
-    $res = $self->SUPER::generate(%opts);
-
-    $log->tracef("<- PackageBase's generate()");
-    $res;
 }
 
 1;

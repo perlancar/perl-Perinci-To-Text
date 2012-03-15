@@ -14,7 +14,7 @@ sub BUILD {
     my ($self, $args) = @_;
 }
 
-sub add_lines {
+sub add_doc_lines {
     my $self = shift;
     my $opts;
     if (ref($_[0]) eq 'HASH') { $opts = shift }
@@ -23,7 +23,7 @@ sub add_lines {
     my @lines = map { $_ . (/\n\z/s ? "" : "\n") }
         map {/\n/ ? split /\n/ : $_} @_;
 
-    my $indent = $self->indent x $self->_indent_level;
+    my $indent = $self->indent x $self->indent_level;
     my $wrap = $opts->{wrap} // $self->wrap;
     if ($wrap) {
         require Text::Wrap;
@@ -73,7 +73,7 @@ sub add_lines {
         my $columns //= 80 - length($indent);
         for my $para (@para) {
             if ($para->[0] eq 'blank') {
-                push @{$self->_lines}, @{$para->[1]};
+                push @{$self->doc_lines}, @{$para->[1]};
             } else {
                 if ($para->[0] eq 'normal') {
                     for (@{$para->[1]}) {
@@ -82,70 +82,68 @@ sub add_lines {
                     $para->[1] = [join("", @{$para->[1]}) . "\n"];
                 }
                 #$log->warnf("para=%s", $para);
-                push @{$self->_lines},
+                push @{$self->doc_lines},
                     Text::Wrap::wrap($indent, $indent, @{$para->[1]});
             }
         }
     } else {
-        # we don't bother calling SUPER::add_lines because all it does is just
-        # this
-        push @{$self->_lines},
+        push @{$self->doc_lines},
             map {"$indent$_"} @lines;
     }
 }
 
-sub gen_summary {
+sub doc_gen_summary {
     my ($self) = @_;
 
     my $name_summary = join(
         "",
-        $self->_parse->{name} // "",
-        ($self->_parse->{name} && $self->_parse->{summary} ? ' - ' : ''),
-        $self->_parse->{summary} // ""
+        $self->doc_parse->{name} // "",
+        ($self->doc_parse->{name} && $self->doc_parse->{summary} ? ' - ' : ''),
+        $self->doc_parse->{summary} // ""
     );
 
-    $self->add_lines(uc($self->loc("Name")), "");
+    $self->add_doc_lines(uc($self->loc("Name")), "");
 
     $self->inc_indent;
-    $self->add_lines($name_summary);
+    $self->add_doc_lines($name_summary);
     $self->dec_indent;
 }
 
-sub gen_version {
+sub doc_gen_version {
     my ($self) = @_;
 
-    $self->add_lines("", uc($self->loc("Version")), "");
+    $self->add_doc_lines("", uc($self->loc("Version")), "");
 
     $self->inc_indent;
-    $self->add_lines($self->{_meta}{pkg_version} // '?');
+    $self->add_doc_lines($self->{_meta}{pkg_version} // '?');
     $self->dec_indent;
 }
 
-sub gen_description {
+sub doc_gen_description {
     my ($self) = @_;
 
-    return unless $self->_parse->{description};
+    return unless $self->doc_parse->{description};
 
-    $self->add_lines("", uc($self->loc("Description")), "");
+    $self->add_doc_lines("", uc($self->loc("Description")), "");
 
     $self->inc_indent;
-    $self->add_lines($self->_parse->{description});
+    $self->add_doc_lines($self->doc_parse->{description});
     $self->dec_indent;
 }
 
-sub _gen_function {
+sub _fdoc_gen {
     my ($self, $url) = @_;
-    my $p = $self->_parse->{functions}{$url};
+    my $p = $self->doc_parse->{functions}{$url};
 
-    $self->add_lines(
+    $self->add_doc_lines(
         "+ " . $p->{name} . $p->{perl_args} . ' -> ' . $p->{human_ret},
         "");
     $self->inc_indent;
 
-    $self->add_lines($p->{summary});
-    $self->add_lines("", $p->{description}) if $p->{description};
+    $self->add_doc_lines($p->{summary});
+    $self->add_doc_lines("", $p->{description}) if $p->{description};
     if (keys %{$p->{args}}) {
-        $self->add_lines(
+        $self->add_doc_lines(
             "",
             $self->loc("Arguments") .
                 ' (' . $self->loc("'*' denotes required arguments") . '):',
@@ -156,8 +154,8 @@ sub _gen_function {
             my $prev_arg_has_ct = $arg_has_ct;
             $arg_has_ct = 0;
             my $pa = $p->{args}{$name};
-            $self->add_lines("") if $i++ > 0 && $prev_arg_has_ct;
-            $self->add_lines(join(
+            $self->add_doc_lines("") if $i++ > 0 && $prev_arg_has_ct;
+            $self->add_doc_lines(join(
                 "",
                 "- ", $name, ($pa->{schema}[1]{req} ? '*' : ''), ' => ',
                 $pa->{human_arg},
@@ -168,17 +166,17 @@ sub _gen_function {
             if ($pa->{summary} || $p->{description}) {
                 $arg_has_ct++;
                 $self->inc_indent;
-                $self->add_lines("", $pa->{summary}) if $pa->{summary};
+                $self->add_doc_lines("", $pa->{summary}) if $pa->{summary};
                 if ($pa->{description}) {
-                    $self->add_lines("", $pa->{description});
+                    $self->add_doc_lines("", $pa->{description});
                 }
                 $self->dec_indent;
             }
         }
     }
-    $self->add_lines("", $self->loc("Return value") . ':', "");
+    $self->add_doc_lines("", $self->loc("Return value") . ':', "");
     $self->inc_indent;
-    $self->add_lines($self->loc(join(
+    $self->add_doc_lines($self->loc(join(
         "",
         "Returns an enveloped result (an array). ",
         "First element (status) is an integer containing HTTP status code ",
@@ -191,23 +189,23 @@ sub _gen_function {
     $self->dec_indent;
 
     $self->dec_indent;
-    $self->add_lines("");
+    $self->add_doc_lines("");
 
     # test
-    #$self->add_lines({wrap=>0}, "Line 1\nLine 2\n");
+    #$self->add_doc_lines({wrap=>0}, "Line 1\nLine 2\n");
 }
 
-sub gen_functions {
+sub doc_gen_functions {
     my ($self) = @_;
-    my $pff = $self->_parse->{functions};
+    my $pff = $self->doc_parse->{functions};
 
-    $self->add_lines("", uc($self->loc("Functions")), "");
+    $self->add_doc_lines("", uc($self->loc("Functions")), "");
     $self->inc_indent;
 
     # XXX categorize functions based on tags
     for my $url (sort keys %$pff) {
         my $p = $pff->{$url};
-        $self->_gen_function($url);
+        $self->_fdoc_gen($url);
     }
 
     $self->dec_indent;
