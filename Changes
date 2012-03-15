@@ -1,12 +1,18 @@
 Revision history for Perinci-To-Text
 
-0.09     2012-03-14
+0.10     2012-03-15
+
+         Refactor: split text wrapping functionality to
+         Perinci::To::Text::AddDocLinesRole to be usable by other modules.
+
+
+0.09     2012-03-15
 
          No functional changes. Internal refactoring (update to using
          SHARYANTO::Role::* roles for better separation of concerns).
 
 
-0.08     2012-03-14
+0.08     2012-03-15
 
          No functional changes. Some refactoring (split DocBase to
          SHARYANTO::Doc::Base + PackageBase) to accomodate Perinci::To::Usage
