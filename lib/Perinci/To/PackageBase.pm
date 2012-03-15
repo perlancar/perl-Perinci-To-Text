@@ -18,6 +18,7 @@ has _pa => (
     is => 'rw',
     lazy => 1,
     default => sub {
+        require Perinci::Access;
         Perinci::Access->new;
     },
 ); # store Perinci::Access object
@@ -25,9 +26,8 @@ has _pa => (
 # VERSION
 
 sub BUILD {
-    require Perinci::Access;
-
     my ($self, $args) = @_;
+
     $self->{url} or die "Please specify url";
     $self->{doc_sections} //= [
         'summary',
