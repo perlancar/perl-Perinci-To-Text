@@ -55,12 +55,12 @@ is_deeply($doc->function_sections, [qw/a b c k j l/], 'add_function_section_afte
     or diag explain $doc->function_sections;
 
 $doc->doc_sections([qw/a b c/]);
-$doc->delete_section('a');
-is_deeply($doc->doc_sections, [qw/b c/], 'delete_section (1)');
-$doc->delete_section('c');
-is_deeply($doc->doc_sections, [qw/b/], 'delete_section (2)');
-$doc->delete_section('a');
-is_deeply($doc->doc_sections, [qw/b/], 'delete_section (3)');
+$doc->delete_doc_section('a');
+is_deeply($doc->doc_sections, [qw/b c/], 'delete_doc_section (1)');
+$doc->delete_doc_section('c');
+is_deeply($doc->doc_sections, [qw/b/], 'delete_doc_section (2)');
+$doc->delete_doc_section('a');
+is_deeply($doc->doc_sections, [qw/b/], 'delete_doc_section (3)');
 
 $doc->function_sections([qw/a b c/]);
 $doc->delete_function_section('a');
