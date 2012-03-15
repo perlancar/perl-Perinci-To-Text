@@ -4,6 +4,8 @@ use 5.010;
 use strict;
 use warnings;
 
+# VERSION
+
 # generate human-readable short description of schema, this will be
 # handled in the future by Sah itself (using the human compiler).
 

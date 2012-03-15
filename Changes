@@ -1,5 +1,11 @@
 Revision history for Perinci-To-Text
 
+0.09     2012-03-14
+
+         No functional changes. Internal refactoring (update to using
+         SHARYANTO::Role::* roles for better separation of concerns).
+
+
 0.08     2012-03-14
 
          No functional changes. Some refactoring (split DocBase to
