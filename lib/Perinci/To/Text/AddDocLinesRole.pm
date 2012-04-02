@@ -17,6 +17,11 @@ sub add_doc_lines {
     my @lines = map { $_ . (/\n\z/s ? "" : "\n") }
         map {/\n/ ? split /\n/ : $_} @_;
 
+    # debug
+    #my @c = caller(2);
+    #$c[1] =~ s!.+/!!;
+    #@lines = map {"[from $c[1]:$c[2]]$_"} @ lines;
+
     my $indent = $self->indent x $self->indent_level;
     my $wrap = $opts->{wrap} // $self->wrap;
 
