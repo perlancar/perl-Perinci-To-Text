@@ -167,11 +167,43 @@ msgstr "Returns an enveloped result (an array). First element (status) is an int
 
 # function features
 
-msgid  "This function supports undo operation. Please read 'The undo protocol' in Rinci::function specification."
-msgstr "This function supports undo operation. Please read 'The undo protocol' in Rinci::function specification."
+# OLD
+#msgid  "This function supports undo operation. Please read 'The undo protocol' in Rinci::function specification."
+#msgstr "This function supports undo operation. Please read 'The undo protocol' in Rinci::function specification."
 
-msgid  "This function is declared as %1 (%2). Please read the '%1' feature in Rinci::function specification."
-msgid  "This function is declared as %1 (%2). Please read the '%1' feature in Rinci::function specification."
+# OLD
+#msgid  "This function is declared as %1 (%2). Please read the '%1' feature in Rinci::function specification."
+#msgid  "This function is declared as %1 (%2). Please read the '%1' feature in Rinci::function specification."
+
+msgid  "This function supports reverse operation."
+msgstr "This function supports reverse operation."
+
+msgid  "This function supports undo operation."
+msgstr "This function supports undo operation."
+
+msgid  "This function supports dry-run operation."
+msgstr "This function supports dry-run operation."
+
+msgid  "This function is pure (produce no side effects)."
+msgstr "This function is pure (produce no side effects)."
+
+msgid  "This function is immutable (returns same result for same arguments)."
+msgstr "This function is immutable (returns same result for same arguments)."
+
+msgid  "This function is idempotent (repeated invocations with same arguments has the same effect as single invocation)."
+msgstr "This function is idempotent (repeated invocations with same arguments has the same effect as single invocation)."
+
+msgid  "This function requires transactions."
+msgstr "This function requires transactions."
+
+msgid  "This function can use transactions."
+msgstr "This function can use transactions."
+
+msgid  "This function can start a new transaction."
+msgstr "This function can start a new transaction."
+
+msgid  "This function can end (commit) transactions."
+msgstr "This function can end (commit) transactions."
 
 # test multiline
 
