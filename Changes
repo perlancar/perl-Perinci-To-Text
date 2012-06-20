@@ -1,65 +1,70 @@
 Revision history for Perinci-To-Text
 
-0.11     2012-03-16
+0.12     2012-06-20 (SHARYANTO)
+
+         No functional changes. Add translations.
+
+
+0.11     2012-03-16 (SHARYANTO)
 
          No functional changes. Fix dependencies.
 
 
-0.10     2012-03-15
+0.10     2012-03-15 (SHARYANTO)
 
          Refactor: split text wrapping functionality to
          Perinci::To::Text::AddDocLinesRole to be usable by other modules.
 
 
-0.09     2012-03-15
+0.09     2012-03-15 (SHARYANTO)
 
          No functional changes. Internal refactoring (update to using
          SHARYANTO::Role::* roles for better separation of concerns).
 
 
-0.08     2012-03-15
+0.08     2012-03-15 (SHARYANTO)
 
          No functional changes. Some refactoring (split DocBase to
          SHARYANTO::Doc::Base + PackageBase) to accomodate Perinci::To::Usage
          better.
 
 
-0.07     2012-03-13
+0.07     2012-03-13 (SHARYANTO)
 
          No functional changes. Add dummy entry in Perinci::To::Text::I18N::* to
          avoid empty lexicon (causes 'Undefined source called' warning in
          Locale::Maketext::Lexicon::Gettext).
 
 
-0.06     2012-03-13
+0.06     2012-03-13 (SHARYANTO)
 
          No functional changes. Split project localization class to subclasses,
          one for each document subclass.
 
 
-0.05     2012-03-13
+0.05     2012-03-13 (SHARYANTO)
 
          Rename distribution from Sub-Spec-To-Text to Perinci-To-Text. Follow
          Rinci 1.1 specification.
 
 
-0.04     2011-11-23
+0.04     2011-11-23 (SHARYANTO)
 
          No functional changes. Replace Data::Sah::Util with Data::Sah.
 
 
-0.03     2011-08-31
+0.03     2011-08-31 (SHARYANTO)
 
          No functional changes. Updated because _parse_schema() is moved from
          Sub::Spec::Utils to Data::Sah::Util.
 
 
-0.02     2011-08-30
+0.02     2011-08-30 (SHARYANTO)
 
          No functional changes. Add empty placeholder module
          Sub::Spec::To::Text. Fix example in Synopsis.
 
 
-0.01     2011-08-24
+0.01     2011-08-24 (SHARYANTO)
 
          First release.
