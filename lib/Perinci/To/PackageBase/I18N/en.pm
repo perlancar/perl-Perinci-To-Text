@@ -156,6 +156,9 @@ msgstr "Arguments related to '%1'"
 msgid  "'*' denotes required arguments"
 msgstr "'*' denotes required arguments"
 
+msgid  "Special arguments"
+msgstr "Special arguments"
+
 msgid  "Result"
 msgstr "Result"
 

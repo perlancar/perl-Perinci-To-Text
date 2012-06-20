@@ -156,6 +156,9 @@ msgstr "Argumen yang berkaitan dengan '%1'"
 msgid  "'*' denotes required arguments"
 msgstr "'*' menandakan argumen wajib"
 
+msgid  "Special arguments"
+msgstr "Argumen khusus"
+
 msgid  "Result"
 msgstr "Hasil"
 
