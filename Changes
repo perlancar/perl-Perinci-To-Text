@@ -1,5 +1,10 @@
 Revision history for Perinci-To-Text
 
+0.14     2012-06-22 (SHARYANTO)
+
+         Update to Rinci 1.1.11 (pkg_version -> entity_version)
+
+
 0.13     2012-06-20 (SHARYANTO)
 
          No functional changes. Add translations.
