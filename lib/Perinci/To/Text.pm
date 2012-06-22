@@ -36,7 +36,7 @@ sub doc_gen_version {
     $self->add_doc_lines("", uc($self->loc("Version")), "");
 
     $self->inc_indent;
-    $self->add_doc_lines($self->{_meta}{pkg_version} // '?');
+    $self->add_doc_lines($self->{_meta}{entity_version} // '?');
     $self->dec_indent;
 }
 

@@ -138,7 +138,7 @@ sub doc_parse_summary {
 sub doc_gen_summary {}
 
 sub doc_parse_version {
-    # already in meta's pkg_version
+    # already in meta's entity_version
 }
 
 sub doc_gen_version {}
