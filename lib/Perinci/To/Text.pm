@@ -78,7 +78,7 @@ sub _fdoc_gen {
             $self->add_doc_lines("") if $i++ > 0 && $prev_arg_has_ct;
             $self->add_doc_lines(join(
                 "",
-                "- ", $name, ($pa->{schema}[1]{req} ? '*' : ''), ' => ',
+                "- ", $name, ($pa->{req} ? '*' : ''), ' => ',
                 $pa->{human_arg},
                 (defined($pa->{human_arg_default}) ?
                      " (" . $self->loc("default") .
