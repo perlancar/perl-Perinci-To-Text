@@ -211,6 +211,9 @@ sub fdoc_parse_arguments {
         }
         $pa->{summary}     = $self->langprop($arg, 'summary');
         $pa->{description} = $self->langprop($arg, 'description');
+        $pa->{arg}         = $arg;
+        $pa->{req}         = $arg->{req}; # for convenience
+        #$pa->{pos}         = $arg->{pos}; # already available in 'arg'
     }
 }
 
