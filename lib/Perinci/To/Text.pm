@@ -97,6 +97,7 @@ sub _fdoc_gen {
     }
     $self->add_doc_lines("", $self->loc("Return value") . ':', "");
     $self->inc_indent;
+    my $rn = $p->{orig_meta}{result_naked} // $p->{meta}{result_naked};
     $self->add_doc_lines($self->loc(join(
         "",
         "Returns an enveloped result (an array). ",
@@ -106,7 +107,7 @@ sub _fdoc_gen {
         "200. Third element (result) is optional, the actual result. Fourth ",
         "element (meta) is called result metadata and is optional, a hash ",
         "that contains extra information.")))
-        unless $p->{schema}{result_naked};
+        unless $rn;
     $self->dec_indent;
 
     $self->dec_indent;

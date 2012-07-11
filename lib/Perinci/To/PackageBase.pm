@@ -178,10 +178,11 @@ sub fdoc_gen_links {}
 
 sub fdoc_parse_arguments {
     my ($self) = @_;
-    my $p     = $self->doc_parse->{functions}{ $self->{_furl} };
-    my $fmeta = $self->{_fmeta};
+    my $p      = $self->doc_parse->{functions}{ $self->{_furl} };
+    my $fmeta  = $self->{_fmeta};
+    my $fometa = $self->{_fometa};
 
-    my $aa = $fmeta->{args_as};
+    my $aa = $fometa->{args_as} // $fmeta->{args_as};
     my $paa;
     if ($aa eq 'hash') {
         $paa = '(%args)';
@@ -222,14 +223,16 @@ sub fdoc_gen_examples {}
 
 sub fdoc_parse_result {
     my ($self) = @_;
-    my $p     = $self->doc_parse->{functions}{ $self->{_furl} };
-    my $fmeta = $self->{_fmeta};
+    my $p      = $self->doc_parse->{functions}{ $self->{_furl} };
+    my $fmeta  = $self->{_fmeta};
+    my $fometa = $self->{_fometa};
 
     $p->{res_schema} = $fmeta->{result} ? $fmeta->{result}{schema} : undef;
     $p->{res_schema} //= [any => {}];
     $p->{human_res} = Perinci::ToUtil::sah2human_short($p->{res_schema});
 
-    if ($fmeta->{result_naked}) {
+    my $rn = $fometa->{result_naked} // $fmeta->{result_naked};
+    if ($rn) {
         $p->{human_ret} = $p->{human_res};
     } else {
         $p->{human_ret} = '[status, msg, result, meta]';
@@ -246,10 +249,12 @@ sub _fdoc_parse {
     $log->tracef("=> _fdoc_parse(url=%s)", $url);
 
     my $fmeta;
+    my $fometa;
     my $found;
     {
         if ($self->{_child_metas}) {
             if ($fmeta = $self->{_child_metas}{$url}) {
+                $fometa = $self->{_child_orig_metas}{$url};
                 $found++;
                 last;
             }
@@ -258,15 +263,17 @@ sub _fdoc_parse {
         my $res = $self->_pa->request(meta => $url);
         $res->[0] == 200 or die "Can't meta $self->{url}: ".
             "$res->[0] - $res->[1]";
-        $fmeta = $res->[2];
+        $fmeta  = $res->[2];
+        $fometa = $res->[3]{orig_meta};
         $found++;
         last;
     }
     die "BUG: Didn't find function metadata" unless $found;
     $self->{_furl} = $url;
     $self->{_fmeta} = $fmeta;
+    $self->{_fometa} = $fometa;
 
-    $self->doc_parse->{functions}{$url} = {meta=>$fmeta};
+    $self->doc_parse->{functions}{$url} = {meta=>$fmeta, orig_meta=>$fometa};
     for my $s (@{ $self->function_sections // [] }) {
         my $meth = "fdoc_parse_$s";
         $log->tracef("=> $meth()");
@@ -326,7 +333,9 @@ sub before_generate_doc {
     $res = $self->_pa->request(meta=>$self->{url});
     if ($res->[0] == 200) {
         $self->{_meta} = $res->[2];
+        $self->{_orig_meta} = $res->[3]{orig_meta};
         #$log->tracef("meta=%s", $self->{_meta});
+        #$log->tracef("orig_meta=%s", $self->{_orig_meta});
     }
 
     $res = $self->_pa->request(list=>$self->{url}, {detail=>1});
@@ -338,6 +347,7 @@ sub before_generate_doc {
     $res->[0] == 200 or die "Can't child_metas $self->{url}: ".
         "$res->[0] - $res->[1]";
     $self->{_child_metas} = $res->[2];
+    $self->{_child_orig_metas} = $res->[3]{orig_metas};
     #$log->tracef("child_metas=%s", $self->{_child_metas});
 
 }
