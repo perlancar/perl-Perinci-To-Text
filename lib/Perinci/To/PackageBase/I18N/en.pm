@@ -216,3 +216,6 @@ msgid  ""
 msgstr ""
 "Line 1"
 "Line 2"
+
+msgid  "This function dies on error."
+msgstr "This function dies on error."

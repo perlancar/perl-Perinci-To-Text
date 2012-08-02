@@ -217,3 +217,5 @@ msgstr ""
 "Baris 1"
 "Baris 2"
 
+msgid  "This function dies on error."
+msgstr "Fungsi ini die() jika menemui kesalahan."

@@ -95,6 +95,12 @@ sub _fdoc_gen {
             }
         }
     }
+
+    if ($p->{meta}{dies_on_error}) {
+        $self->add_doc_lines("", $self->loc(
+            "This function dies on error."), "");
+    }
+
     $self->add_doc_lines("", $self->loc("Return value") . ':', "");
     $self->inc_indent;
     my $rn = $p->{orig_meta}{result_naked} // $p->{meta}{result_naked};
