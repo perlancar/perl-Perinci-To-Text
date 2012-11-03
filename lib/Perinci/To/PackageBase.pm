@@ -19,7 +19,17 @@ has _pa => (
     lazy => 1,
     default => sub {
         require Perinci::Access;
-        Perinci::Access->new;
+        require Perinci::Access::InProcess;
+        my $pa = Perinci::Access->new;
+        # slightly reduce startup overhead by avoiding to compile sah schemas
+        my $pai = Perinci::Access::InProcess->new(
+            extra_wrapper_args => {
+                validate_args => 0,
+                compile => 0,
+            },
+        );
+        $pa->{handlers}{pl} = $pai;
+        $pa;
     },
 ); # store Perinci::Access object
 
