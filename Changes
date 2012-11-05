@@ -1,5 +1,11 @@
 Revision history for Perinci-To-Text
 
+0.18     2012-11-05 (SHARYANTO)
+
+         No functional changes. Avoid failure when processing a module without
+         any metadata.
+
+
 0.17     2012-11-03 (SHARYANTO)
 
          No functional changes. Fix version dependency.
