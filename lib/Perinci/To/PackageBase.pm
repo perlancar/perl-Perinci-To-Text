@@ -192,7 +192,7 @@ sub fdoc_parse_arguments {
     my $fmeta  = $self->{_fmeta};
     my $fometa = $self->{_fometa};
 
-    my $aa = $fometa->{args_as} // $fmeta->{args_as};
+    my $aa = $fometa->{args_as} // $fmeta->{args_as} // 'hash';
     my $paa;
     if ($aa eq 'hash') {
         $paa = '(%args)';
