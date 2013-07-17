@@ -27,3 +27,9 @@ sub sah2human_short {
 
 1;
 # ABSTRACT: Temporary utility module
+
+=head1 FUNCTIONS
+
+=head2 sah2human_short
+
+=cut

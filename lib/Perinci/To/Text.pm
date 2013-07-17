@@ -1,6 +1,6 @@
 package Perinci::To::Text;
 
-use 5.010;
+use 5.010001;
 use Log::Any '$log';
 use Moo;
 
@@ -141,6 +141,8 @@ sub doc_gen_functions {
 
 1;
 # ABSTRACT: Generate text documentation from Rinci package metadata
+
+=for Pod::Coverage .+
 
 =head1 SYNOPSIS
 

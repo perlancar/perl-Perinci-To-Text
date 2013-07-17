@@ -367,3 +367,5 @@ sub before_generate_doc {
 
 1;
 # ABSTRACT: Base class for Perinci::To::* package documentation generators
+
+=for Pod::Coverage .+

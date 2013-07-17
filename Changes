@@ -1,5 +1,11 @@
 Revision history for Perinci-To-Text
 
+0.19     2013-07-17 (SHARYANTO)
+
+         No functional changes. Add Synopsis that refers to peri-doc and
+         Perinci::CmdLine also.
+
+
 0.18     2012-11-05 (SHARYANTO)
 
          No functional changes. Avoid failure when processing a module without
