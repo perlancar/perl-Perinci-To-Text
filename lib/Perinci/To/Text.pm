@@ -142,4 +142,23 @@ sub doc_gen_functions {
 1;
 # ABSTRACT: Generate text documentation from Rinci package metadata
 
+=head1 SYNOPSIS
+
+ use Perinci::To::POD;
+
+ # to generate text documentation for the whole module
+ my $doc = Perinci::To::Text->new(url => "/Some/Module/");
+ say $doc->generate_doc;
+
+You can also try the L<peri-doc> script (included in the L<Perinci::To::POD>
+distribution) with the C<--format text> option:
+
+ % peri-doc --format text Some::Module
+
+To generate a usage-like help message for a single function only, you can try
+L<Perinci::CmdLine>, using it like this:
+
+ my $cmd = Perinci::CmdLine->new(url => "/Some/Module/func");
+ $cmd->run_help; # will print help text
+
 =cut
