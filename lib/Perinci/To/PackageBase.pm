@@ -23,7 +23,6 @@ has _pa => (
         my $pai = Perinci::Access::InProcess->new(
             extra_wrapper_args => {
                 validate_args => 0,
-                compile => 0,
             },
         );
         $pa->{handlers}{pl} = $pai;
