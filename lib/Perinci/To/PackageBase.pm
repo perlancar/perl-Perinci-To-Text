@@ -143,7 +143,7 @@ sub gen_doc_section_functions {
 
     # subclasses should override this method and provide the appropriate
     # Perinci::Sub::To::* object in _fgen.
-    my $self->{_fgen} //= Perinci::Sub::To::FuncBase(
+    $self->{_fgen} //= Perinci::Sub::To::FuncBase(
         _pa => $self->_pa, # to avoid multiple instances of pa objects
     );
 
