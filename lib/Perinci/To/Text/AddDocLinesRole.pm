@@ -81,6 +81,7 @@ sub add_doc_lines {
                     $para->[1] = [join("", @{$para->[1]}) . "\n"];
                 }
                 #$log->warnf("para=%s", $para);
+                local $Text::Wrap::columns = $ENV{COLUMNS} // 80;
                 push @{$self->doc_lines},
                     Text::Wrap::wrap($indent, $indent, @{$para->[1]});
             }
@@ -101,7 +102,7 @@ This role provides C<add_doc_lines()> which wraps the lines. This method is
 separated from L<Perinci::To::Text> so other modules can use it (e.g.
 L<Perinci::CmdLine>, which also generates help/usage message).
 
-To change width of columns, set C<$Text::Wrap::columns>.
+The default column width
 
 
 =head1 ATTRIBUTES
@@ -114,5 +115,12 @@ Whether to do text wrapping.
 =head1 METHODS
 
 =head2 $o->add_doc_lines([$opts, ]@lines)
+
+
+=head1 ENVIRONMENT
+
+=head2 COLUMNS => INT
+
+Used to set column width.
 
 =cut
