@@ -64,15 +64,17 @@ sub gen_doc_section_functions {
     );
 
     $self->add_doc_lines("", uc($self->loc("Functions")), "");
-    $self->inc_doc_indent;
     $self->SUPER::gen_doc_section_functions;
     for my $furi (sort keys %{ $self->{_res}{functions} }) {
         my $fname;
         for ($fname) { $_ = $furi; s!.+/!! }
-        $self->add_doc_lines($self->{_res}{functions}{$furi});
+        for (@{ $self->{_res}{functions}{$furi} }) {
+            chomp;
+            $self->add_doc_lines({wrap=>0}, $_);
+        }
+        $self->add_doc_lines('');
     }
-    $self->dec_doc_indent;
-}
+g}
 
 1;
 # ABSTRACT: Generate text documentation for a package from Rinci metadata
