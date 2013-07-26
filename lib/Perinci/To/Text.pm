@@ -58,10 +58,10 @@ sub _fdoc_gen {
 
     $self->add_doc_lines(
         "+ " . $p->{name} . $p->{perl_args} . ' -> ' . $p->{human_ret},
-        "");
+    );
     $self->inc_indent;
 
-    $self->add_doc_lines($p->{summary});
+    $self->add_doc_lines("", $p->{summary}) if $p->{summary};
     $self->add_doc_lines("", $p->{description}) if $p->{description};
     if (keys %{$p->{args}}) {
         $self->add_doc_lines(
