@@ -97,7 +97,7 @@ sub add_doc_lines {
     my @lines = map { $_ . (/\n\z/s ? "" : "\n") }
         map {/\n/ ? split /\n/ : $_} @_;
 
-    my $indent = $self->doc_indent x $self->doc_indent_level;
+    my $indent = $self->doc_indent_str x $self->doc_indent_level;
     push @{$self->doc_lines},
         map {"$indent$_"} @lines;
 }

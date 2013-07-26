@@ -75,15 +75,13 @@ sub gen_doc_section_functions {
 }
 
 1;
-# ABSTRACT: Generate text documentation from Rinci package metadata
+# ABSTRACT: Generate text documentation for a package from Rinci metadata
 
 =for Pod::Coverage .+
 
 =head1 SYNOPSIS
 
  use Perinci::To::POD;
-
- # to generate text documentation for the whole module
  my $doc = Perinci::To::Text->new(url => "/Some/Module/");
  say $doc->gen_doc;
 
@@ -95,7 +93,7 @@ distribution) with the C<--format text> option:
 To generate documentation for a single function, see L<Perinci::Sub::To::Text>
 or the provided command-line script L<peri-func-doc>.
 
-To generate a usage-like help message for a single function only, you can try
-the L<peri-func-usage> from the L<Perinci::CmdLine> distribution.
+To generate a usage-like help message for a single function, you can try the
+L<peri-func-usage> from the L<Perinci::CmdLine> distribution.
 
 =cut
