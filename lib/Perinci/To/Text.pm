@@ -5,7 +5,7 @@ use Log::Any '$log';
 use Moo;
 
 extends 'Perinci::To::PackageBase';
-with    'Perinci::To::Text::AddDocLinesRole';
+with    'SHARYANTO::Role::Doc::Section::AddTextLines';
 
 # VERSION
 
