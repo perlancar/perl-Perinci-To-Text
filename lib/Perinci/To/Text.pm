@@ -74,7 +74,7 @@ sub gen_doc_section_functions {
         }
         $self->add_doc_lines('');
     }
-g}
+}
 
 1;
 # ABSTRACT: Generate text documentation for a package from Rinci metadata
