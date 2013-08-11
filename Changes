@@ -2,40 +2,41 @@ Revision history for Perinci-To-Text
 
 0.21     2013-08-02 (SHARYANTO)
 
-         No functional changes. Remove old tests [CT].
+         - No functional changes. Remove old tests [CT].
 
 
 0.20     2013-07-26 (SHARYANTO)
 
-         No functional changes. Adjust to using the new Perinci::Sub::To::Text.
+         - No functional changes. Adjust to using the new
+           Perinci::Sub::To::Text.
 
 
 0.19     2013-07-17 (SHARYANTO)
 
-         No functional changes. Add Synopsis that refers to peri-doc and
-         Perinci::CmdLine also.
+         - No functional changes. Add Synopsis that refers to peri-doc and
+           Perinci::CmdLine also.
 
 
 0.18     2012-11-05 (SHARYANTO)
 
-         No functional changes. Avoid failure when processing a module without
-         any metadata.
+         - No functional changes. Avoid failure when processing a module without
+           any metadata.
 
 
 0.17     2012-11-03 (SHARYANTO)
 
-         No functional changes. Fix version dependency.
+         - No functional changes. Fix version dependency.
 
 
 0.16     2012-11-03 (SHARYANTO)
 
-         No functional changes. Reduce startup overhead by avoiding compiling
-         Sah schemas and wrapper code.
+         - No functional changes. Reduce startup overhead by avoiding compiling
+           Sah schemas and wrapper code.
 
 
 0.15     2012-08-02 (SHARYANTO)
 
-         Some display tweaks.
+         [DISPLAY TWEAKS]
 
          - Show dies_on_error property.
 
@@ -46,79 +47,79 @@ Revision history for Perinci-To-Text
 
 0.14     2012-06-22 (SHARYANTO)
 
-         Update to Rinci 1.1.11 (pkg_version -> entity_version)
+         - Update to Rinci 1.1.11 (pkg_version -> entity_version)
 
 
 0.13     2012-06-20 (SHARYANTO)
 
-         No functional changes. Add translations.
+         - No functional changes. Add translations.
 
 
 0.12     2012-06-20 (SHARYANTO)
 
-         No functional changes. Add translations.
+         - No functional changes. Add translations.
 
 
 0.11     2012-03-16 (SHARYANTO)
 
-         No functional changes. Fix dependencies.
+         - No functional changes. Fix dependencies.
 
 
 0.10     2012-03-15 (SHARYANTO)
 
-         Refactor: split text wrapping functionality to
-         Perinci::To::Text::AddDocLinesRole to be usable by other modules.
+         - Refactor: split text wrapping functionality to
+           Perinci::To::Text::AddDocLinesRole to be usable by other modules.
 
 
 0.09     2012-03-15 (SHARYANTO)
 
-         No functional changes. Internal refactoring (update to using
-         SHARYANTO::Role::* roles for better separation of concerns).
+         - No functional changes. Internal refactoring (update to using
+           SHARYANTO::Role::* roles for better separation of concerns).
 
 
 0.08     2012-03-15 (SHARYANTO)
 
-         No functional changes. Some refactoring (split DocBase to
-         SHARYANTO::Doc::Base + PackageBase) to accomodate Perinci::To::Usage
-         better.
+         - No functional changes. Some refactoring (split DocBase to
+           SHARYANTO::Doc::Base + PackageBase) to accomodate Perinci::To::Usage
+           better.
 
 
 0.07     2012-03-13 (SHARYANTO)
 
-         No functional changes. Add dummy entry in Perinci::To::Text::I18N::* to
-         avoid empty lexicon (causes 'Undefined source called' warning in
-         Locale::Maketext::Lexicon::Gettext).
+         - No functional changes. Add dummy entry in Perinci::To::Text::I18N::*
+           to avoid empty lexicon (causes 'Undefined source called' warning in
+           Locale::Maketext::Lexicon::Gettext).
 
 
 0.06     2012-03-13 (SHARYANTO)
 
-         No functional changes. Split project localization class to subclasses,
-         one for each document subclass.
+         - No functional changes. Split project localization class to subclasses,
+           one for each document subclass.
 
 
 0.05     2012-03-13 (SHARYANTO)
 
-         Rename distribution from Sub-Spec-To-Text to Perinci-To-Text. Follow
-         Rinci 1.1 specification.
+         - Rename distribution from Sub-Spec-To-Text to Perinci-To-Text. Follow
+           Rinci 1.1 specification.
 
 
 0.04     2011-11-23 (SHARYANTO)
 
-         No functional changes. Replace Data::Sah::Util with Data::Sah.
+         - No functional changes. Replace Data::Sah::Util with Data::Sah.
 
 
 0.03     2011-08-31 (SHARYANTO)
 
-         No functional changes. Updated because _parse_schema() is moved from
-         Sub::Spec::Utils to Data::Sah::Util.
+         - No functional changes. Updated because _parse_schema() is moved from
+           Sub::Spec::Utils to Data::Sah::Util.
 
 
 0.02     2011-08-30 (SHARYANTO)
 
-         No functional changes. Add empty placeholder module
-         Sub::Spec::To::Text. Fix example in Synopsis.
+         - No functional changes. Add empty placeholder module
+           Sub::Spec::To::Text. Fix example in Synopsis.
 
 
 0.01     2011-08-24 (SHARYANTO)
 
-         First release.
+         - First release.
