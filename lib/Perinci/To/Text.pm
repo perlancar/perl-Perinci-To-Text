@@ -20,9 +20,9 @@ sub gen_doc_section_summary {
 
     my $name_summary = join(
         "",
-        $self->{_res}{name} // "",
-        ($self->{_res}{name} && $self->{_res}{summary} ? ' - ' : ''),
-        $self->{_res}{summary} // ""
+        $self->{_doc_res}{name} // "",
+        ($self->{_doc_res}{name} && $self->{_doc_res}{summary} ? ' - ' : ''),
+        $self->{_doc_res}{summary} // ""
     );
 
     $self->add_doc_lines(uc($self->loc("Name")), "");
@@ -37,7 +37,7 @@ sub gen_doc_section_version {
     $self->add_doc_lines("", uc($self->loc("Version")), "");
 
     $self->inc_doc_indent;
-    $self->add_doc_lines($self->{_meta}{entity_version} // '?');
+    $self->add_doc_lines($self->{_doc_meta}{entity_version} // '?');
     $self->dec_doc_indent;
 }
 
@@ -45,12 +45,12 @@ sub gen_doc_section_description {
     my ($self) = @_;
 
     $self->SUPER::gen_doc_section_description;
-    return unless $self->{_res}{description};
+    return unless $self->{_doc_res}{description};
 
     $self->add_doc_lines("", uc($self->loc("Description")), "");
 
     $self->inc_doc_indent;
-    $self->add_doc_lines($self->{_res}{description});
+    $self->add_doc_lines($self->{_doc_res}{description});
     $self->dec_doc_indent;
 }
 
@@ -59,16 +59,16 @@ sub gen_doc_section_functions {
 
     my ($self) = @_;
 
-    $self->{_fgen} //= Perinci::Sub::To::Text->new(
+    $self->{_doc_fgen} //= Perinci::Sub::To::Text->new(
         _pa => $self->_pa, # to avoid multiple instances of pa objects
     );
 
     $self->add_doc_lines("", uc($self->loc("Functions")), "");
     $self->SUPER::gen_doc_section_functions;
-    for my $furi (sort keys %{ $self->{_res}{functions} }) {
+    for my $furi (sort keys %{ $self->{_doc_res}{functions} }) {
         my $fname;
         for ($fname) { $_ = $furi; s!.+/!! }
-        for (@{ $self->{_res}{functions}{$furi} }) {
+        for (@{ $self->{_doc_res}{functions}{$furi} }) {
             chomp;
             $self->add_doc_lines({wrap=>0}, $_);
         }

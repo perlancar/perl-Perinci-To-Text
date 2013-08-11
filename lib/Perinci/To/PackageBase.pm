@@ -50,37 +50,37 @@ sub before_gen_doc {
     $log->tracef("=> PackageBase's before_gen_doc(opts=%s)", \%opts);
 
     # initialize hash to store [intermediate] result
-    $self->{_res} = {};
+    $self->{_doc_res} = {};
 
     # let's retrieve the metadatas first
 
     my $res = $self->_pa->request(info=>$self->{url});
     $res->[0] == 200 or die "Can't info $self->{url}: $res->[0] - $res->[1]";
-    $self->{_info} = $res->[2];
-    #$log->tracef("info=%s", $self->{_info});
+    $self->{_doc_info} = $res->[2];
+    #$log->tracef("info=%s", $self->{_doc_info});
 
-    die "url must be a package entity, not $self->{_info}{type} ($self->{url})"
-        unless $self->{_info}{type} eq 'package';
+    die "url must be a package entity, not $self->{_doc_info}{type} ($self->{url})"
+        unless $self->{_doc_info}{type} eq 'package';
 
     $res = $self->_pa->request(meta=>$self->{url});
     if ($res->[0] == 200) {
-        $self->{_meta} = $res->[2];
-        $self->{_orig_meta} = $res->[3]{orig_meta};
-        #$log->tracef("meta=%s", $self->{_meta});
-        #$log->tracef("orig_meta=%s", $self->{_orig_meta});
+        $self->{_doc_meta} = $res->[2];
+        $self->{_doc_orig_meta} = $res->[3]{orig_meta};
+        #$log->tracef("meta=%s", $self->{_doc_meta});
+        #$log->tracef("orig_meta=%s", $self->{_doc_orig_meta});
     }
 
     $res = $self->_pa->request(list=>$self->{url}, {detail=>1});
     $res->[0] == 200 or die "Can't list $self->{url}: $res->[0] - $res->[1]";
-    $self->{_children} = $res->[2];
-    #$log->tracef("children=%s", $self->{_children});
+    $self->{_doc_children} = $res->[2];
+    #$log->tracef("children=%s", $self->{_doc_children});
 
     $res = $self->_pa->request(child_metas=>$self->{url});
     $res->[0] == 200 or die "Can't child_metas $self->{url}: ".
         "$res->[0] - $res->[1]";
-    $self->{_child_metas} = $res->[2];
-    $self->{_child_orig_metas} = $res->[3]{orig_metas};
-    #$log->tracef("child_metas=%s", $self->{_child_metas});
+    $self->{_doc_child_metas} = $res->[2];
+    $self->{_doc_child_orig_metas} = $res->[3]{orig_metas};
+    #$log->tracef("child_metas=%s", $self->{_doc_child_metas});
 
 }
 
@@ -109,21 +109,21 @@ sub gen_doc_section_summary {
 
     my $modname;
     for ($modname) {
-        $_ = $self->{_info}{uri};
+        $_ = $self->{_doc_info}{uri};
         s!^pl:/!!;
         s!/$!!;
         s!/!::!g;
     }
 
-    if ($self->{_meta}) {
-        $name    = $self->langprop($self->{_meta}, "name");
-        $summary = $self->langprop($self->{_meta}, "summary");
+    if ($self->{_doc_meta}) {
+        $name    = $self->langprop($self->{_doc_meta}, "name");
+        $summary = $self->langprop($self->{_doc_meta}, "summary");
     }
     $name //= $modname;
     $summary = "";
 
-    $self->{_res}{name}    = $name;
-    $self->{_res}{summary} = $summary;
+    $self->{_doc_res}{name}    = $name;
+    $self->{_doc_res}{summary} = $summary;
 }
 
 sub gen_doc_section_version {
@@ -132,8 +132,8 @@ sub gen_doc_section_version {
 sub gen_doc_section_description {
     my ($self) = @_;
 
-    $self->{_res}{description} = $self->{_meta} ?
-        $self->langprop($self->{_meta}, "description") : undef;
+    $self->{_doc_res}{description} = $self->{_doc_meta} ?
+        $self->langprop($self->{_doc_meta}, "description") : undef;
 }
 
 sub gen_doc_section_functions {
@@ -143,27 +143,27 @@ sub gen_doc_section_functions {
 
     # subclasses should override this method and provide the appropriate
     # Perinci::Sub::To::* object in _fgen.
-    $self->{_fgen} //= Perinci::Sub::To::FuncBase->new(
+    $self->{_doc_fgen} //= Perinci::Sub::To::FuncBase->new(
         _pa => $self->_pa, # to avoid multiple instances of pa objects
     );
 
     # list all functions
     my @func_uris = map { $_->{uri} }
-        grep { $_->{type} eq 'function' } @{ $self->{_children} // []};
+        grep { $_->{type} eq 'function' } @{ $self->{_doc_children} // []};
 
     # generate doc for all functions
-    my $fgen = $self->{_fgen};
-    $self->{_res}{functions} = {};
+    my $fgen = $self->{_doc_fgen};
+    $self->{_doc_res}{functions} = {};
     for my $furi (@func_uris) {
         $fgen->url($furi);
-        if ($self->{_child_metas}) {
+        if ($self->{_doc_child_metas}) {
             # avoid calling meta on furi again by fgen, since we have the meta
             # already in _child_metas.
-            $fgen->{_meta}      = $self->{_child_metas}{$furi};
-            $fgen->{_orig_meta} = $self->{_child_orig_metas}{$furi};
+            $fgen->{_doc_meta}      = $self->{_doc_child_metas}{$furi};
+            $fgen->{_doc_orig_meta} = $self->{_doc_child_orig_metas}{$furi};
         }
         $fgen->gen_doc();
-        $self->{_res}{functions}{$furi} = $fgen->doc_lines;
+        $self->{_doc_res}{functions}{$furi} = $fgen->doc_lines;
     }
 }
 
