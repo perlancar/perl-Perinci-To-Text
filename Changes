@@ -1,5 +1,10 @@
 Revision history for Perinci-To-Text
 
+0.22     2013-08-11 (SHARYANTO)
+
+         - No functional changes. Adjust to Perinci::Sub::To::Text 0.24.
+
+
 0.21     2013-08-02 (SHARYANTO)
 
          - No functional changes. Remove old tests [CT].
