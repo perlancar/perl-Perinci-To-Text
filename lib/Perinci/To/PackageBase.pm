@@ -17,15 +17,16 @@ has _pa => (
     lazy => 1,
     default => sub {
         require Perinci::Access;
-        require Perinci::Access::InProcess;
+        require Perinci::Access::Perl;
         my $pa = Perinci::Access->new;
         # slightly reduce startup overhead by avoiding to compile sah schemas
-        my $pai = Perinci::Access::InProcess->new(
+        my $pap = Perinci::Access::Perl->new(
             extra_wrapper_args => {
                 validate_args => 0,
             },
         );
-        $pa->{handlers}{pl} = $pai;
+        $pa->{handlers}{pl} = $pap;
+        delete $pa->{handlers}{''};
         $pa;
     },
 ); # store Perinci::Access object
