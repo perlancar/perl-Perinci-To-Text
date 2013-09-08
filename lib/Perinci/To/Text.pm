@@ -37,7 +37,7 @@ sub gen_doc_section_version {
     $self->add_doc_lines("", uc($self->loc("Version")), "");
 
     $self->inc_doc_indent;
-    $self->add_doc_lines($self->{_doc_meta}{entity_version} // '?');
+    $self->add_doc_lines($self->{_doc_meta}{entity_v} // '?');
     $self->dec_doc_indent;
 }
 
