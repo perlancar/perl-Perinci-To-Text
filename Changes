@@ -1,5 +1,10 @@
 Revision history for Perinci-To-Text
 
+0.25     2013-10-02 (SHARYANTO)
+
+         - No functional changes. Forgot to add 'use utf8'.
+
+
 0.24     2013-10-02 (SHARYANTO)
 
          - No functional changes. Add French translation.
