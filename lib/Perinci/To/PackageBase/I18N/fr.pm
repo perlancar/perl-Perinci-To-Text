@@ -1,3 +1,5 @@
+use utf8;
+
 package Perinci::To::PackageBase::I18N::fr;
 use base 'Perinci::To::PackageBase::I18N';
 
