@@ -1,5 +1,12 @@
 Revision history for Perinci-To-Text
 
+0.26     2013-10-23 (SHARYANTO)
+
+         - No functional changes. Rebuild under
+           Dist::Zilla::Plugin::Test::Compile 2.037 to fix hanging problem
+           [suggested by Slaven Rezic, RT#89714]
+
+
 0.25     2013-10-02 (SHARYANTO)
 
          - No functional changes. Forgot to add 'use utf8'.
