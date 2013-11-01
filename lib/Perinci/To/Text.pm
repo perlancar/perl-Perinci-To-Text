@@ -16,13 +16,16 @@ sub BUILD {
 sub gen_doc_section_summary {
     my ($self) = @_;
 
+    #my $meta = $self->meta;
+    my $dres = $self->{_doc_res};
+
     $self->SUPER::gen_doc_section_summary;
 
     my $name_summary = join(
         "",
-        $self->{_doc_res}{name} // "",
-        ($self->{_doc_res}{name} && $self->{_doc_res}{summary} ? ' - ' : ''),
-        $self->{_doc_res}{summary} // ""
+        $dres->{name} // "",
+        ($dres->{name} && $dres->{summary} ? ' - ' : ''),
+        $dres->{summary} // ""
     );
 
     $self->add_doc_lines(uc($self->loc("Name")), "");
@@ -34,24 +37,37 @@ sub gen_doc_section_summary {
 
 sub gen_doc_section_version {
     my ($self) = @_;
+
+    my $meta = $self->meta;
+    #my $dres = $self->{_doc_res};
+
     $self->add_doc_lines("", uc($self->loc("Version")), "");
 
     $self->inc_doc_indent;
-    $self->add_doc_lines($self->{_doc_meta}{entity_v} // '?');
+    $self->add_doc_lines($meta->{entity_v} // '?');
     $self->dec_doc_indent;
 }
 
 sub gen_doc_section_description {
     my ($self) = @_;
 
+    my $dres = $self->{_doc_res};
+
     $self->SUPER::gen_doc_section_description;
-    return unless $self->{_doc_res}{description};
+    return unless $dres->{description};
 
     $self->add_doc_lines("", uc($self->loc("Description")), "");
 
     $self->inc_doc_indent;
-    $self->add_doc_lines($self->{_doc_res}{description});
+    $self->add_doc_lines($dres->{description});
     $self->dec_doc_indent;
+}
+
+sub _gen_func_doc {
+    my $self = shift;
+    my $o = Perinci::Sub::To::Text->new(@_);
+    $o->gen_doc;
+    $o->doc_lines;
 }
 
 sub gen_doc_section_functions {
@@ -59,16 +75,12 @@ sub gen_doc_section_functions {
 
     my ($self) = @_;
 
-    $self->{_doc_fgen} //= Perinci::Sub::To::Text->new(
-        _pa => $self->_pa, # to avoid multiple instances of pa objects
-    );
+    my $dres = $self->{_doc_res};
 
     $self->add_doc_lines("", uc($self->loc("Functions")), "");
     $self->SUPER::gen_doc_section_functions;
-    for my $furi (sort keys %{ $self->{_doc_res}{functions} }) {
-        my $fname;
-        for ($fname) { $_ = $furi; s!.+/!! }
-        for (@{ $self->{_doc_res}{functions}{$furi} }) {
+    for my $furi (sort keys %{ $dres->{functions} }) {
+        for (@{ $dres->{functions}{$furi} }) {
             chomp;
             $self->add_doc_lines({wrap=>0}, $_);
         }
@@ -84,7 +96,8 @@ sub gen_doc_section_functions {
 =head1 SYNOPSIS
 
  use Perinci::To::POD;
- my $doc = Perinci::To::Text->new(url => "/Some/Module/");
+ my $doc = Perinci::To::Text->new(
+     name=>'Foo::Bar', meta => {...}, child_metas=>{...});
  say $doc->gen_doc;
 
 You can also try the L<peri-pkg-doc> script (included in the L<Perinci::To::POD>
