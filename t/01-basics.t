@@ -6,9 +6,19 @@ use warnings;
 
 use Test::More 0.96;
 
+use Perinci::Access::Perl;
 use Perinci::To::Text;
 
-my $doc = Perinci::To::Text->new(url => '/Perinci/Examples/');
+my $pa = Perinci::Access::Perl->new;
+my $res = $pa->request(meta => "pl:/Perinci/Examples/");
+die "Can't meta: $res->[0] - $res->[1]" unless $res->[0] == 200;
+my $meta = $res->[2];
+$res = $pa->request(child_metas => "pl:/Perinci/Examples/");
+die "Can't child_metas: $res->[0] - $res->[1]" unless $res->[0] == 200;
+my $cmetas = $res->[2];
+
+my $doc = Perinci::To::Text->new(
+    name=>"Perinci::Examples", meta=>$meta, child_metas=>$cmetas);
 
 $doc->doc_sections([qw/a b c/]);
 $doc->add_doc_section_before('j', 'a');

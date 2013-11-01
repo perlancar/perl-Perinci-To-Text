@@ -1,5 +1,12 @@
 Revision history for Perinci-To-Text
 
+0.27     2013-11-01 (SHARYANTO)
+
+         [INCOMPATIBLE CHANGES]
+
+         - Adjust to Perinci::Sub::To::Text 0.28.
+
+
 0.26     2013-10-23 (SHARYANTO)
 
          - No functional changes. Rebuild under
